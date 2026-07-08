@@ -1,11 +1,13 @@
 import { useLanguage } from '@/context/LanguageContext'
 import { loadOnboardingState, saveOnboardingState } from '@/lib/onboarding'
+import { getSiteCopy } from '@/lib/site-copy'
 import { useRouter } from 'next/router'
 import styles from './language.module.css'
 
 export default function LanguagePage() {
   const { lang, setLang } = useLanguage()
   const router = useRouter()
+  const copy = getSiteCopy(lang).language
 
   function chooseLanguage(value: 'he' | 'en') {
     setLang(value)
@@ -17,21 +19,21 @@ export default function LanguagePage() {
   return (
     <main className={styles.page}>
       <div className={styles.panel}>
-        <p className={styles.label}>שפה / Language</p>
-        <h1 className={styles.title}>בחר את השפה שלך</h1>
-        <p className={styles.description}>עבור לחוויית ארון חכם מותאמת לשפה ולכיוון הטקסט.</p>
+        <p className={styles.label}>{copy.label}</p>
+        <h1>{copy.title}</h1>
+        <p>{copy.description}</p>
         <div className={styles.options}>
           <button
             className={lang === 'he' ? styles.primaryButton : styles.secondaryButton}
             onClick={() => chooseLanguage('he')}
           >
-            🇮🇱 עברית
+            {copy.hebrew}
           </button>
           <button
             className={lang === 'en' ? styles.primaryButton : styles.secondaryButton}
             onClick={() => chooseLanguage('en')}
           >
-            🇺🇸 English
+            {copy.english}
           </button>
         </div>
       </div>

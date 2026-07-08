@@ -1,70 +1,247 @@
 .page {
   min-height: 100vh;
-  padding: 48px;
-  background: url('/assets/images/hero-bg.png') center/cover fixed;
+  padding: 56px 24px 80px;
+  background:
+    linear-gradient(180deg, rgba(4, 4, 4, 0.85), rgba(4, 4, 4, 0.96)),
+    radial-gradient(circle at top right, rgba(214, 182, 123, 0.16), transparent 36%),
+    url('/assets/images/hero-closet-clean.png') center/cover fixed;
   color: #fff;
 }
+
 .panel {
-  max-width: 760px;
+  max-width: 900px;
   margin: 0 auto;
-  padding: 36px;
-  background: rgba(5, 5, 5, 0.86);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 28px;
+  padding: 42px;
+  background: rgba(5, 5, 5, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 36px;
+  box-shadow: 0 26px 72px rgba(0, 0, 0, 0.4);
 }
-.backButton {
-  color: #fff;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  margin-bottom: 20px;
-}
+
 .header {
+  display: grid;
+  gap: 14px;
   margin-bottom: 28px;
 }
+
+.contextGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  margin-bottom: 32px;
+}
+
+.contextCard {
+  padding: 22px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: transform 220ms ease, border-color 220ms ease;
+}
+
+.contextCard:hover {
+  transform: translateY(-3px);
+  border-color: rgba(214, 182, 123, 0.5);
+}
+
+.contextCard h3 {
+  margin: 0 0 10px;
+}
+
+.contextCard p {
+  margin: 0;
+  color: #dcd7c9;
+  line-height: 1.7;
+}
+
 .splash {
+  margin: 0;
   text-transform: uppercase;
-  letter-spacing: 0.25em;
+  letter-spacing: 0.27em;
   color: #d6b67b;
-  margin-bottom: 10px;
+  font-size: 0.78rem;
 }
+
 .sectionTitle {
-  margin: 0 0 14px;
+  margin: 0;
+  font-size: clamp(2rem, 4vw, 3rem);
 }
-.fieldLabel {
-  display: block;
-  margin-bottom: 20px;
+
+.question {
+  margin: 0;
+  color: rgba(245, 241, 230, 0.9);
+  font-size: clamp(1.2rem, 2vw, 1.5rem);
+}
+
+.header p {
+  margin: 0;
+  color: rgba(245, 241, 230, 0.84);
+  line-height: 1.8;
+}
+
+.selectionSection {
+  margin-bottom: 26px;
+}
+
+.selectionLabel {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: #d6b67b;
+  font-size: 0.8rem;
+}
+
+.selectionHint {
+  margin: 8px 0 14px;
+  color: rgba(245, 241, 230, 0.7);
+}
+
+.optionGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.optionButton,
+.optionButtonActive {
+  min-width: 106px;
+  padding: 12px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: transform 200ms ease, border-color 200ms ease, background-color 200ms ease;
+}
+
+.optionButton {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: #f5f1e6;
+}
+
+.optionButtonActive {
+  background: linear-gradient(180deg, rgba(214, 182, 123, 0.24), rgba(214, 182, 123, 0.12));
+  border: 1px solid rgba(214, 182, 123, 0.72);
   color: #fff;
 }
-.fieldSelect {
-  width: 100%;
-  border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(255, 255, 255, 0.05);
-  color: #fff;
-  padding: 14px;
-  margin-top: 8px;
+
+.optionButton:hover,
+.optionButtonActive:hover {
+  transform: translateY(-2px);
 }
+
 .actions {
   display: flex;
+  flex-wrap: wrap;
   gap: 14px;
-  margin-top: 16px;
+  margin-top: 4px;
 }
+
 .primaryButton {
-  padding: 12px 20px;
+  padding: 13px 22px;
   border-radius: 999px;
   border: none;
   background: linear-gradient(180deg, #ecc77d, #b78f4a);
   color: #111;
   cursor: pointer;
+  font-weight: 700;
 }
+
+.secondaryButton {
+  padding: 13px 22px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.05);
+  color: #f5f1e6;
+  text-decoration: none;
+  font-weight: 600;
+}
+
 .result {
   margin-top: 30px;
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 20px;
+  border-radius: 24px;
   padding: 24px;
 }
+
 .result h2 {
   margin: 0 0 12px;
+}
+
+.result p {
+  margin: 0 0 10px;
+  color: rgba(245, 241, 230, 0.86);
+  line-height: 1.8;
+}
+
+.saveButton {
+  margin-top: 10px;
+  padding: 12px 18px;
+  border-radius: 999px;
+  border: 1px solid rgba(214, 182, 123, 0.6);
+  background: rgba(214, 182, 123, 0.14);
+  color: #f5f1e6;
+  cursor: pointer;
+}
+
+.visualPanel {
+  margin-top: 18px;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.03);
+  padding: 16px;
+}
+
+.visualPanel h3,
+.visualPanel h4 {
+  margin: 0 0 12px;
+}
+
+.visualImage {
+  width: 100%;
+  max-height: 260px;
+  border-radius: 12px;
+  object-fit: cover;
+  margin-bottom: 14px;
+}
+
+.componentList {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.componentRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.componentRow span {
+  color: rgba(245, 241, 230, 0.78);
+  text-align: end;
+}
+
+.reasonList {
+  margin: 0;
+  padding-inline-start: 20px;
+  color: rgba(245, 241, 230, 0.86);
+  line-height: 1.8;
+}
+
+@media (max-width: 700px) {
+  .panel {
+    padding: 30px 20px;
+  }
+
+  .contextGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .optionButton,
+  .optionButtonActive {
+    min-width: 96px;
+  }
 }

@@ -2,7 +2,7 @@
   min-height: 100vh;
   display: grid;
   place-items: center;
-  background: linear-gradient(180deg, rgba(4, 4, 4, 0.98), rgba(4, 4, 4, 0.94)), url('/assets/images/hero-bg.png') center/cover fixed;
+  background: linear-gradient(180deg, rgba(4, 4, 4, 0.9), rgba(4, 4, 4, 0.96)), url('/ChatGPT%20Image%20Jul%208,%202026,%2007_03_14%20AM.png') center/cover fixed;
   color: #f5f1e6;
   padding: 24px;
 }

@@ -3,7 +3,7 @@
   display: grid;
   place-items: center;
   padding: 40px;
-  background: url('/assets/images/hero-bg.png') center/cover fixed;
+  background: linear-gradient(180deg, rgba(4, 4, 4, 0.9), rgba(4, 4, 4, 0.96)), url('/ChatGPT%20Image%20Jul%208,%202026,%2007_03_14%20AM.png') center/cover fixed;
   position: relative;
   color: #f5f1e6;
 }
@@ -43,6 +43,12 @@
   color: rgba(245, 241, 230, 0.78);
   line-height: 1.8;
   margin: 18px 0 0;
+}
+
+.selectionMeta {
+  margin: 12px 0 0;
+  color: #d6b67b;
+  font-weight: 600;
 }
 .actions {
   margin-top: 32px;

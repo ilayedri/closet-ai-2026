@@ -1,0 +1,81 @@
+:root {
+  color-scheme: dark;
+  color: #f5f1e6;
+  background: #040404;
+  font-family: Inter, 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100%;
+  background: #040404;
+  color: #f5f1e6;
+  text-rendering: optimizeLegibility;
+  padding-top: 84px;
+  text-align: start;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  border: none;
+}
+
+html[dir='rtl'] body {
+  direction: rtl;
+}
+
+html[dir='ltr'] body {
+  direction: ltr;
+}
+
+html[dir='rtl'] input,
+html[dir='rtl'] select,
+html[dir='rtl'] textarea {
+  direction: rtl;
+  text-align: right;
+}
+
+html[dir='ltr'] input,
+html[dir='ltr'] select,
+html[dir='ltr'] textarea {
+  direction: ltr;
+  text-align: left;
+}
+
+::selection {
+  background: rgba(214, 182, 123, 0.3);
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at top left, rgba(214, 182, 123, 0.1), transparent 25%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(0, 0, 0, 0.8));
+  pointer-events: none;
+  z-index: -1;
+}

@@ -1,46 +1,70 @@
+import { useLanguage } from '@/context/LanguageContext'
 import { loadOnboardingState, saveOnboardingState } from '@/lib/onboarding'
+import { getSiteCopy } from '@/lib/site-copy'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import styles from './onboarding.module.css'
 
-const styleOptions = ['Minimal', 'Luxury', 'Streetwear', 'Business', 'Sport']
-
 export default function Onboard3() {
   const router = useRouter()
-  const [style, setStyle] = useState('Minimal')
+  const { lang } = useLanguage()
+  const copy = getSiteCopy(lang).onboarding3
+  const [selectedStyles, setSelectedStyles] = useState<string[]>(['Minimal'])
 
   useEffect(() => {
     const saved = loadOnboardingState()
-    if (saved.style) setStyle(saved.style)
+    if (saved.style?.length) setSelectedStyles(saved.style)
   }, [])
 
+  function toggleStyle(value: string) {
+    setSelectedStyles((prev) => {
+      if (prev.includes(value)) {
+        if (prev.length === 1) return prev
+        return prev.filter((item) => item !== value)
+      }
+      return [...prev, value]
+    })
+  }
+
   function handleNext() {
-    saveOnboardingState({ ...loadOnboardingState(), style })
+    saveOnboardingState({ ...loadOnboardingState(), style: selectedStyles })
     router.push('/onboarding/4')
   }
+
+  const multiHint =
+    lang === 'he'
+      ? 'ניתן לבחור כמה סגנונות שמתאימים לך.'
+      : 'You can choose multiple styles that match you.'
+
+  const selectedLabel =
+    lang === 'he'
+      ? `נבחרו ${selectedStyles.length} סגנונות`
+      : `${selectedStyles.length} styles selected`
 
   return (
     <div className={styles.page}>
       <div className={styles.panel}>
-        <p className={styles.splash}>העדפות סטייל</p>
-        <h1 className={styles.title}>הגדר את הסגנון האישי שלך</h1>
-        <p className={styles.text}>בחר את קצה האופנה שמייצג אותך וה־AI ימליץ בהתאם.</p>
+        <p className={styles.splash}>{copy.splash}</p>
+        <h1 className={styles.title}>{copy.title}</h1>
+        <p className={styles.text}>{copy.text}</p>
+        <p className={styles.text}>{multiHint}</p>
+        <p className={styles.selectionMeta}>{selectedLabel}</p>
 
         <div className={styles.optionsGrid}>
-          {styleOptions.map((option) => (
+          {copy.options.map((option) => (
             <button
-              key={option}
-              className={option === style ? styles.optionActive : styles.optionButton}
-              onClick={() => setStyle(option)}
+              key={option.value}
+              className={selectedStyles.includes(option.value) ? styles.optionActive : styles.optionButton}
+              onClick={() => toggleStyle(option.value)}
             >
-              {option}
+              {option.label}
             </button>
           ))}
         </div>
 
         <div className={styles.actions}>
           <button className={styles.primaryButton} onClick={handleNext}>
-            שמור והמשך
+            {copy.save}
           </button>
         </div>
       </div>

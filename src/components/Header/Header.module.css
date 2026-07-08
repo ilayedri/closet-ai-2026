@@ -1,5 +1,5 @@
 .header {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
@@ -7,9 +7,12 @@
   align-items: center;
   justify-content: space-between;
   gap: 24px;
-  padding: 26px clamp(24px, 4vw, 48px);
+  padding: 18px clamp(24px, 4vw, 48px);
   color: #f7e9d1;
-  z-index: 3;
+  z-index: 999;
+  backdrop-filter: blur(20px);
+  background: rgba(4, 4, 4, 0.85);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 .brandGroup {
   display: flex;
@@ -34,8 +37,28 @@
   font-size: 14px;
 }
 .nav a {
-  color: inherit;
+  color: rgba(247, 233, 209, 0.78);
   text-decoration: none;
+  padding: 8px 0;
+  position: relative;
+  transition: color 160ms ease;
+}
+.nav a:hover,
+.nav a:focus {
+  color: #fff;
+}
+.navLinkActive {
+  color: #fff;
+}
+.navLinkActive::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -4px;
+  height: 2px;
+  background: linear-gradient(90deg, #f4d38f, #b78f4a);
+  border-radius: 999px;
 }
 .rightGroup {
   display: flex;

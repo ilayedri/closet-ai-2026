@@ -1,104 +1,134 @@
 .page {
   min-height: 100vh;
-  display: grid;
-  place-items: center;
-  color: #f5f1e6;
   position: relative;
-  padding: 0 24px 80px;
+  padding: 0;
+  color: #f5f1e6;
   overflow: hidden;
+  background:
+    radial-gradient(circle at top center, rgba(179, 132, 63, 0.14), transparent 22%),
+    linear-gradient(180deg, #050505 0%, #090909 100%);
 }
 
 .page::before {
   content: '';
   position: absolute;
   inset: 0;
-  background: url('/assets/images/hero-bg-new.png') center/cover fixed;
-  opacity: 1;
-  z-index: -2;
+  background: linear-gradient(180deg, rgba(3, 3, 3, 0.08), rgba(3, 3, 3, 0.16));
+  z-index: 0;
+  pointer-events: none;
 }
 
-.page::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(4, 4, 4, 0.08), rgba(4, 4, 4, 0.16));
-  z-index: -1;
+.shell {
+  position: relative;
+  z-index: 1;
+  max-width: 1300px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 0 28px;
+}
+
+.contentShell {
+  position: relative;
+  z-index: 1;
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 52px 28px 88px;
 }
 
 .hero {
   position: relative;
-  width: min(1180px, 100%);
-  padding: 96px 60px 80px;
-  border-radius: 40px;
+  min-height: 100vh;
   overflow: hidden;
-  background: rgba(0, 0, 0, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  box-shadow: 0 40px 120px rgba(0, 0, 0, 0.18);
-  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: stretch;
+  background-repeat: no-repeat;
+}
+
+.heroBackdrop {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(2, 2, 2, 0.84) 0%, rgba(2, 2, 2, 0.66) 36%, rgba(2, 2, 2, 0.32) 62%, rgba(2, 2, 2, 0.2) 100%),
+    radial-gradient(circle at 74% 20%, rgba(211, 159, 60, 0.16), transparent 28%);
+  z-index: 0;
 }
 
 .overlay {
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 20% 20%, rgba(214, 182, 123, 0.08), transparent 22%),
-    linear-gradient(180deg, rgba(0, 0, 0, 0.06), rgba(0, 0, 0, 0.12));
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.04), rgba(0, 0, 0, 0.2));
+  z-index: 0;
 }
 
-.heroContent {
+.heroGrid {
   position: relative;
   z-index: 1;
   display: grid;
-  gap: 24px;
-  max-width: 660px;
+  grid-template-columns: minmax(0, 1.1fr) minmax(280px, 380px);
+  gap: 40px;
+  align-items: center;
+  min-height: 100vh;
+  padding: 120px 0 64px;
+}
+
+.heroContent {
+  display: grid;
+  gap: 26px;
+  max-width: 690px;
+  animation: fadeUp 700ms ease-out both;
 }
 
 .badge {
   margin: 0;
   color: #d6b67b;
-  letter-spacing: 0.35em;
   text-transform: uppercase;
+  letter-spacing: 0.34em;
   font-size: 0.82rem;
 }
 
 .hero h1 {
   margin: 0;
-  font-size: clamp(3rem, 5vw, 4.8rem);
-  line-height: 0.96;
+  font-size: clamp(3.8rem, 6vw, 6.5rem);
+  line-height: 0.92;
+  letter-spacing: -0.04em;
+  max-width: 9ch;
+  text-shadow: 0 18px 48px rgba(0, 0, 0, 0.34);
 }
 
 .hero p {
   margin: 0;
-  color: rgba(245, 241, 230, 0.82);
-  max-width: 42rem;
-  line-height: 1.85;
+  color: rgba(245, 241, 230, 0.92);
+  max-width: 38rem;
+  line-height: 1.9;
+  font-size: 1.1rem;
 }
 
+.heroActions,
 .actions {
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
-  margin-top: 16px;
+  margin-top: 8px;
 }
 
 .primaryButton,
 .secondaryButton,
-.linkButton,
-.footerLinks a {
+.ghostButton {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
-  padding: 14px 24px;
+  padding: 16px 28px;
   border-radius: 999px;
-  text-decoration: none;
   font-weight: 700;
+  text-decoration: none;
   transition: transform 0.24s ease, box-shadow 0.24s ease, background-color 0.24s ease;
 }
 
 .primaryButton {
   background: linear-gradient(180deg, #f4d38f, #b78f4a);
   color: #111;
-  box-shadow: 0 18px 40px rgba(211, 159, 60, 0.18);
+  box-shadow: 0 18px 42px rgba(211, 159, 60, 0.18);
 }
 
 .secondaryButton {
@@ -107,155 +137,256 @@
   border: 1px solid rgba(255, 255, 255, 0.14);
 }
 
-.secondaryButton:hover,
+.ghostButton {
+  background: rgba(255, 255, 255, 0.05);
+  color: #f5f1e6;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
 .primaryButton:hover,
-.linkButton:hover,
-.footerLinks a:hover {
-  transform: translateY(-1px);
+.secondaryButton:hover,
+.ghostButton:hover {
+  transform: translateY(-2px);
 }
 
-.subtext {
-  margin-top: 18px;
-  color: rgba(245, 241, 230, 0.68);
+.heroSignals {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  max-width: 700px;
 }
 
-.section {
-  width: min(1180px, 100%);
-  margin-top: 56px;
+.signalCard {
+  padding: 20px 22px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(18px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.signalCard span {
+  display: block;
+  margin-bottom: 8px;
+  color: rgba(245, 241, 230, 0.66);
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+}
+
+.signalCard strong {
+  font-size: 1rem;
+}
+
+.assistantRail {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  min-height: 100%;
+}
+
+.assistantCard {
+  width: min(100%, 360px);
+  padding: 28px;
+  border-radius: 28px;
+  background: linear-gradient(180deg, rgba(28, 24, 20, 0.42), rgba(12, 10, 9, 0.58));
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.34);
+  backdrop-filter: blur(22px);
+  animation: floatCard 5.6s ease-in-out infinite;
+}
+
+.assistantLabel {
+  margin: 0 0 14px;
+  color: #d6b67b;
+  text-transform: uppercase;
+  letter-spacing: 0.24em;
+  font-size: 0.78rem;
+}
+
+.assistantCard h2 {
+  margin: 0 0 12px;
+  font-size: clamp(1.7rem, 3vw, 2.35rem);
+  line-height: 1.1;
+}
+
+.assistantCard p,
+.sectionText {
+  color: rgba(245, 241, 230, 0.8);
+  line-height: 1.8;
+}
+
+.visionSection,
+.featureSection,
+.flowSection {
+  margin-top: 52px;
   display: grid;
   gap: 30px;
 }
 
-.sectionCard {
-  padding: 32px;
-  border-radius: 30px;
-  background: rgba(15, 15, 15, 0.84);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.sectionLabel {
-  display: inline-flex;
-  padding: 10px 16px;
-  border-radius: 999px;
-  background: rgba(214, 182, 123, 0.12);
-  color: #d6b67b;
-  text-transform: uppercase;
-  letter-spacing: 0.2em;
-  font-size: 0.75rem;
-  margin-bottom: 18px;
-}
-
-.overviewGrid {
+.sectionIntro {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 20px;
-}
-
-.featureCard {
-  padding: 26px;
-  border-radius: 26px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.featureTitle {
-  margin: 0 0 12px;
-  font-size: 1.1rem;
-}
-
-.splitSection {
-  display: grid;
-  grid-template-columns: 1.2fr 0.8fr;
-  gap: 26px;
-  align-items: center;
-}
-
-.splitText {
-  padding: 32px;
-  border-radius: 30px;
-  background: rgba(15, 15, 15, 0.84);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.splitPreview {
-  padding: 32px;
-  border-radius: 30px;
-  background: rgba(0, 0, 0, 0.58);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.previewCard {
-  display: grid;
-  gap: 16px;
-}
-
-.previewCard span {
-  color: #d6b67b;
-  text-transform: uppercase;
-  letter-spacing: 0.2em;
-  font-size: 0.75rem;
-}
-
-.previewCard p {
-  margin: 0;
-  color: rgba(245, 241, 230, 0.86);
-  line-height: 1.75;
-}
-
-.footerSection {
-  width: min(1180px, 100%);
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
-  align-items: center;
-  margin-top: 54px;
-  padding: 32px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  gap: 12px;
+  max-width: 760px;
 }
 
 .smallLabel {
-  margin: 0 0 8px;
+  margin: 0;
   text-transform: uppercase;
-  letter-spacing: 0.25em;
-  color: rgba(214, 182, 123, 0.9);
-  font-size: 0.82rem;
+  letter-spacing: 0.32em;
+  color: #d6b67b;
+  font-size: 0.78rem;
 }
 
-.footerLinks {
-  display: flex;
-  gap: 18px;
-  flex-wrap: wrap;
+.visionGrid,
+.featureGrid,
+.roadmapGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px;
 }
 
-.footerLinks a {
-  color: rgba(245, 241, 230, 0.9);
+.visionCard,
+.featureCard,
+.flowCard {
+  padding: 30px;
+  border-radius: 32px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.14);
 }
 
-@media (max-width: 980px) {
-  .overviewGrid,
-  .splitSection {
+.featureTag {
+  margin: 0 0 12px;
+  font-size: 0.78rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: #d6b67b;
+}
+
+.visionCard h3,
+.featureCard h3,
+.flowCard h3 {
+  margin: 0 0 14px;
+  font-size: 1.15rem;
+}
+
+.visionCard p,
+.featureCard p,
+.flowCard p {
+  margin: 0;
+  color: rgba(245, 241, 230, 0.82);
+  line-height: 1.8;
+}
+
+.stepNumber {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  margin-bottom: 20px;
+  border-radius: 999px;
+  background: rgba(214, 182, 123, 0.18);
+  color: #f5f1e6;
+  font-weight: 700;
+}
+
+.aboutSection {
+  margin-top: 44px;
+}
+
+.aboutCard {
+  max-width: 1040px;
+  padding: 40px;
+  border-radius: 34px;
+  background: rgba(5, 5, 5, 0.86);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.aboutCard h3 {
+  margin: 8px 0 16px;
+  font-size: clamp(2rem, 3vw, 2.6rem);
+}
+
+.aboutCard p {
+  margin: 0 0 12px;
+  color: rgba(245, 241, 230, 0.82);
+  line-height: 1.85;
+}
+
+@media (max-width: 1100px) {
+  .heroGrid,
+  .visionGrid,
+  .featureGrid,
+  .roadmapGrid,
+  .heroSignals {
     grid-template-columns: 1fr;
   }
 
-  .hero {
-    padding: 60px 32px 56px;
+  .assistantRail {
+    order: -1;
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 960px) {
+  .shell,
+  .contentShell {
+    padding-left: 18px;
+    padding-right: 18px;
   }
 
-  .footerSection {
-    display: grid;
+  .hero {
+    min-height: auto;
+  }
+
+  .heroGrid {
+    min-height: auto;
+    padding: 112px 0 52px;
+    gap: 26px;
   }
 }
 
 @media (max-width: 640px) {
-  .hero {
-    padding: 42px 24px 40px;
-  }
-
   .hero h1 {
-    font-size: 2.9rem;
+    font-size: clamp(2.9rem, 10vw, 4rem);
   }
 
+  .heroActions,
   .actions {
     flex-direction: column;
+  }
+
+  .assistantCard,
+  .aboutCard,
+  .visionCard,
+  .featureCard,
+  .flowCard,
+  .signalCard {
+    border-radius: 26px;
+  }
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes floatCard {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-10px);
   }
 }

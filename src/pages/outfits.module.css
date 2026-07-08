@@ -1,0 +1,135 @@
+.page {
+  min-height: 100vh;
+  padding: 60px 24px 80px;
+  background:
+    linear-gradient(180deg, rgba(4, 4, 4, 0.82), rgba(4, 4, 4, 0.96)),
+    radial-gradient(circle at top left, rgba(214, 182, 123, 0.14), transparent 32%),
+    url('/assets/images/hero-closet-clean.png') center/cover fixed;
+  color: #f5f1e6;
+}
+
+.panel {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 42px;
+  background: rgba(5, 5, 5, 0.84);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 36px;
+  box-shadow: 0 28px 76px rgba(0, 0, 0, 0.38);
+}
+
+.header {
+  display: grid;
+  gap: 16px;
+  margin-bottom: 30px;
+}
+
+.splash {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  color: #d6b67b;
+  font-size: 0.82rem;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: clamp(2.8rem, 4vw, 3.8rem);
+}
+
+.header p {
+  margin: 0;
+  color: rgba(245, 241, 230, 0.8);
+  line-height: 1.8;
+}
+
+.collectionSection {
+  margin-top: 18px;
+}
+
+.collectionLabel {
+  margin: 0 0 14px;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.24em;
+  color: #d6b67b;
+}
+
+.outfitGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.outfitCard,
+.outfitCardMuted {
+  padding: 28px;
+  border-radius: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.outfitCard {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.outfitCardMuted {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.outfitLabel {
+  margin: 0 0 12px;
+  font-size: 0.78rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #d6b67b;
+}
+
+.outfitCard h2 {
+  margin: 0 0 14px;
+}
+
+.outfitCard p {
+  margin: 0;
+  color: rgba(245, 241, 230, 0.82);
+  line-height: 1.8;
+}
+
+.outfitCardMuted p {
+  margin: 0;
+  color: rgba(245, 241, 230, 0.74);
+  line-height: 1.8;
+}
+
+.bottomNote {
+  margin-top: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.bottomNote p {
+  margin: 0;
+  color: rgba(245, 241, 230, 0.82);
+  line-height: 1.7;
+}
+
+.primaryButton {
+  background: linear-gradient(180deg, #f4d38f, #b78f4a);
+  color: #111;
+  padding: 14px 26px;
+  border-radius: 999px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+@media (max-width: 960px) {
+  .outfitGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .bottomNote {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

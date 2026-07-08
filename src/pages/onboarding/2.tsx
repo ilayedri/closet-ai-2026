@@ -1,4 +1,5 @@
 import { useLanguage } from '@/context/LanguageContext'
+import { getSiteCopy } from '@/lib/site-copy'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 import styles from './onboarding.module.css'
@@ -6,6 +7,7 @@ import styles from './onboarding.module.css'
 export default function Onboard2() {
   const { lang, setLang } = useLanguage()
   const router = useRouter()
+  const copy = getSiteCopy(lang).onboarding2
 
   useEffect(() => {
     if (lang) {
@@ -16,9 +18,9 @@ export default function Onboard2() {
   return (
     <div className={styles.page}>
       <div className={styles.panel}>
-        <p className={styles.splash}>בחר/י שפה</p>
-        <h1 className={styles.title}>בחר/י את השפה המועדפת עליך</h1>
-        <p className={styles.text}>הבחירה תשמור את כיוון הטקסט והחווייה שלך.</p>
+        <p className={styles.splash}>{copy.splash}</p>
+        <h1 className={styles.title}>{copy.title}</h1>
+        <p className={styles.text}>{copy.text}</p>
         <div className={styles.langButtons}>
           <button
             className={lang === 'he' ? styles.primaryButton : styles.secondaryButton}

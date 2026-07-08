@@ -1,32 +1,37 @@
+import { useLanguage } from '@/context/LanguageContext'
 import { findCategory, itemsByCategory } from '@/lib/closet'
+import { getSiteCopy } from '@/lib/site-copy'
 import { useRouter } from 'next/router'
 import styles from './category.module.css'
 
 export default function CategoryPage() {
   const router = useRouter()
+  const { lang } = useLanguage()
+  const copy = getSiteCopy(lang).categoryPage
+  const brandLabel = lang === 'he' ? 'מותג' : 'Brand'
   const { category } = router.query
-  const details = typeof category === 'string' ? findCategory(category) : null
+  const details = typeof category === 'string' ? findCategory(category, lang) : null
   const items = typeof category === 'string' ? itemsByCategory(category) : []
 
   if (!details) {
-    return <div className={styles.page}>קטגוריה לא נמצאה.</div>
+    return <div className={styles.page}>{copy.notFound}</div>
   }
 
   return (
     <div className={styles.page}>
       <div className={styles.panel}>
         <button className={styles.backButton} onClick={() => router.push('/closet')}>
-          ← חזור ל־My Closet
+          ← {copy.back}
         </button>
 
         <header className={styles.header}>
           <div>
             <p className={styles.splash}>{details.emoji} {details.label}</p>
             <h1>{details.label}</h1>
-            <p>פריטים בחלק זה של הארון שלך.</p>
+            <p>{copy.description}</p>
           </div>
-          <button className={styles.primaryButton} onClick={() => router.push('/add-item')}>
-            הוסף פריט חדש
+          <button className={styles.primaryButton} onClick={() => router.push('/add-item')} type="button">
+            {copy.addItem}
           </button>
         </header>
 
@@ -34,16 +39,26 @@ export default function CategoryPage() {
           {items.map((item) => (
             <div key={item.id} className={styles.itemCard}>
               <div className={styles.imageWrapper}>
-                <img src={item.image || '/assets/images/blazer.jpg'} alt={item.name} />
+                {item.image ? (
+                  <img src={item.image} alt={item.name} />
+                ) : (
+                  <div className={styles.imagePlaceholder}>
+                    <strong>{item.name}</strong>
+                    <span>{details.label}</span>
+                    <span>{item.color} · {item.style}</span>
+                  </div>
+                )}
               </div>
               <div className={styles.itemInfo}>
                 <strong>{item.name}</strong>
                 <span>{item.color} · {item.style}</span>
-                <span>נוסף ב־{item.dateAdded}</span>
+                {item.brand ? <span>{brandLabel} {item.brand}</span> : null}
+                <span>{copy.season} {item.season}</span>
+                <span>{copy.addedOn} {item.dateAdded}</span>
               </div>
             </div>
           ))}
-          {items.length === 0 && <p>טרם נוספו פריטים בקטגוריה זו.</p>}
+          {items.length === 0 && <p>{copy.empty}</p>}
         </div>
       </div>
     </div>

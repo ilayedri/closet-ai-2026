@@ -1,3 +1,7 @@
+import type { Lang } from '@/context/LanguageContext'
+import type { ClothingCategory, ClothingSeason } from '@/lib/data-model'
+import { getSiteCopy } from './site-copy'
+
 export type ClosetCategory = {
   id: string
   label: string
@@ -8,50 +12,37 @@ export type ClosetCategory = {
 export type ClosetItem = {
   id: string
   name: string
-  category: string
+  category: ClothingCategory
   image?: string
   color: string
   style: string
+  season: ClothingSeason
+  brand?: string
   dateAdded: string
 }
 
-export const categories: ClosetCategory[] = [
-  { id: 'shirts', label: 'חולצות', emoji: '👕', description: 'החלק העליון של הסטייל שלך.' },
-  { id: 'pants', label: 'מכנסיים', emoji: '👖', description: 'הבסיס לכל לוק.' },
-  { id: 'shoes', label: 'נעליים', emoji: '👟', description: 'הגימור שמרים כל הופעה.' },
-  { id: 'jackets', label: 'מעילים', emoji: '🧥', description: 'כל שכבה חכמה לעונה.' },
-  { id: 'accessories', label: 'אקססוריז', emoji: '⌚', description: 'פרטים קטנים שמשפרים הכל.' },
+const categoryMeta = [
+  { id: 'shirts', emoji: '👕' },
+  { id: 'pants', emoji: '👖' },
+  { id: 'shoes', emoji: '👟' },
+  { id: 'jackets', emoji: '🧥' },
+  { id: 'accessories', emoji: '⌚' },
 ]
 
-const defaultItems: ClosetItem[] = [
-  {
-    id: '1',
-    name: 'Navy Blazer',
-    category: 'jackets',
-    image: '/assets/images/blazer.jpg',
-    color: 'Navy',
-    style: 'Business',
-    dateAdded: '2026-07-08',
-  },
-  {
-    id: '2',
-    name: 'White Shirt',
-    category: 'shirts',
-    image: '/assets/images/shirt.jpg',
-    color: 'White',
-    style: 'Minimal',
-    dateAdded: '2026-07-08',
-  },
-  {
-    id: '3',
-    name: 'Chinos',
-    category: 'pants',
-    image: '/assets/images/chinos.jpg',
-    color: 'Beige',
-    style: 'Smart Casual',
-    dateAdded: '2026-07-08',
-  },
-]
+export const categories: ClosetCategory[] = getCategories('en')
+
+export function getCategories(lang: Lang): ClosetCategory[] {
+  const copy = getSiteCopy(lang).categories
+
+  return categoryMeta.map((category) => ({
+    id: category.id,
+    emoji: category.emoji,
+    label: copy[category.id as keyof typeof copy].label,
+    description: copy[category.id as keyof typeof copy].description,
+  }))
+}
+
+const defaultItems: ClosetItem[] = []
 
 export function loadClosetItems(): ClosetItem[] {
   if (typeof window === 'undefined') return defaultItems
@@ -85,6 +76,13 @@ export function itemsByCategory(category: string): ClosetItem[] {
   return loadClosetItems().filter((item) => item.category === category)
 }
 
-export function findCategory(id: string) {
-  return categories.find((category) => category.id === id)
+export function getCategoryItemCounts() {
+  return loadClosetItems().reduce<Record<string, number>>((acc, item) => {
+    acc[item.category] = (acc[item.category] ?? 0) + 1
+    return acc
+  }, {})
+}
+
+export function findCategory(id: string, lang: Lang = 'en') {
+  return getCategories(lang).find((category) => category.id === id)
 }

@@ -1,10 +1,14 @@
+import { useLanguage } from '@/context/LanguageContext'
 import { loadOnboardingState, saveOnboardingState } from '@/lib/onboarding'
+import { getSiteCopy } from '@/lib/site-copy'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import styles from './onboarding.module.css'
 
 export default function Onboard4() {
   const router = useRouter()
+  const { lang } = useLanguage()
+  const copy = getSiteCopy(lang).onboarding4
   const [state, setState] = useState(loadOnboardingState())
 
   useEffect(() => {
@@ -20,16 +24,16 @@ export default function Onboard4() {
   return (
     <div className={styles.page}>
       <div className={styles.panel}>
-        <p className={styles.splash}>סיום ההגדרות</p>
-        <h1 className={styles.title}>הארון החכם שלך כמעט מוכן</h1>
-        <p className={styles.text}>הגדרות סופיות כדי להתחיל לקבל לוקים ואורח חיים של סגנון אישי.</p>
+        <p className={styles.splash}>{copy.splash}</p>
+        <h1 className={styles.title}>{copy.title}</h1>
+        <p className={styles.text}>{copy.text}</p>
         <div className={styles.summaryBox}>
-          <div>שפה: {state.language === 'he' ? 'עברית' : 'English'}</div>
-          <div>סגנון: {state.style}</div>
+          <div>{copy.language}: {state.language === 'he' ? 'עברית' : 'English'}</div>
+          <div>{copy.style}: {state.style.join(', ')}</div>
         </div>
         <div className={styles.actions}>
           <button className={styles.primaryButton} onClick={handleComplete}>
-            פתח את הארון שלי
+            {copy.openCloset}
           </button>
         </div>
       </div>
