@@ -1,0 +1,53 @@
+.header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 26px clamp(24px, 4vw, 48px);
+  color: #f7e9d1;
+  z-index: 3;
+}
+.brandGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.brand {
+  font-weight: 900;
+  font-size: 22px;
+  letter-spacing: 0.12em;
+}
+.brandTag {
+  font-size: 11px;
+  color: rgba(247, 233, 209, 0.75);
+  text-transform: uppercase;
+  letter-spacing: 0.28em;
+}
+.nav {
+  display: flex;
+  gap: 30px;
+  opacity: 0.92;
+  font-size: 14px;
+}
+.nav a {
+  color: inherit;
+  text-decoration: none;
+}
+.rightGroup {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+.cta {
+  background: linear-gradient(180deg, #f5d691, #b18943);
+  color: #111;
+  padding: 14px 26px;
+  border-radius: 999px;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 18px 42px rgba(206, 157, 56, 0.22);
+}

@@ -1,0 +1,7 @@
+{
+  "items": [
+    { "id": "1", "name": "Navy Blazer", "image": "/assets/images/blazer.jpg" },
+    { "id": "2", "name": "White Shirt", "image": "/assets/images/shirt.jpg" },
+    { "id": "3", "name": "Chinos", "image": "/assets/images/chinos.jpg" }
+  ]
+}

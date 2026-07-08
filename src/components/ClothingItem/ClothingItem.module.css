@@ -1,0 +1,14 @@
+.item {
+  width: 140px;
+  color: #fff;
+}
+.thumb {
+  width: 100%;
+  height: 140px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: rgba(255,255,255,0.03);
+}
+.thumb img { width: 100%; height: 100%; object-fit: cover }
+.name { margin-top: 8px; font-size: 14px }
+.placeholder { width: 100%; height: 100%; background: linear-gradient(90deg,#222,#333) }

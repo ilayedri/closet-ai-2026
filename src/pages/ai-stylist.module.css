@@ -1,0 +1,70 @@
+.page {
+  min-height: 100vh;
+  padding: 48px;
+  background: url('/assets/images/hero-bg.png') center/cover fixed;
+  color: #fff;
+}
+.panel {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 36px;
+  background: rgba(5, 5, 5, 0.86);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 28px;
+}
+.backButton {
+  color: #fff;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+.header {
+  margin-bottom: 28px;
+}
+.splash {
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  color: #d6b67b;
+  margin-bottom: 10px;
+}
+.sectionTitle {
+  margin: 0 0 14px;
+}
+.fieldLabel {
+  display: block;
+  margin-bottom: 20px;
+  color: #fff;
+}
+.fieldSelect {
+  width: 100%;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  padding: 14px;
+  margin-top: 8px;
+}
+.actions {
+  display: flex;
+  gap: 14px;
+  margin-top: 16px;
+}
+.primaryButton {
+  padding: 12px 20px;
+  border-radius: 999px;
+  border: none;
+  background: linear-gradient(180deg, #ecc77d, #b78f4a);
+  color: #111;
+  cursor: pointer;
+}
+.result {
+  margin-top: 30px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  padding: 24px;
+}
+.result h2 {
+  margin: 0 0 12px;
+}

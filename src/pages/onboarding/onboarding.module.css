@@ -1,0 +1,116 @@
+.page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 40px;
+  background: url('/assets/images/hero-bg.png') center/cover fixed;
+  position: relative;
+  color: #f5f1e6;
+}
+.page::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(8, 8, 8, 0.82);
+  z-index: 0;
+}
+.page > * {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 960px);
+}
+.panel {
+  padding: 34px;
+  border-radius: 28px;
+  backdrop-filter: blur(18px);
+  background: rgba(10, 10, 10, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
+}
+.splash {
+  margin: 0 0 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.35em;
+  color: #d6b67b;
+  font-size: 0.78rem;
+}
+.title {
+  margin: 0;
+  font-size: clamp(2.7rem, 4vw, 4.2rem);
+  line-height: 1.02;
+}
+.text {
+  color: rgba(245, 241, 230, 0.78);
+  line-height: 1.8;
+  margin: 18px 0 0;
+}
+.actions {
+  margin-top: 32px;
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.primaryButton,
+.secondaryButton {
+  padding: 14px 24px;
+  border-radius: 999px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.primaryButton {
+  background: linear-gradient(180deg, #f3d47d, #b9883d);
+  color: #111;
+}
+.secondaryButton {
+  background: rgba(255, 255, 255, 0.06);
+  color: #f5f1e6;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+.optionsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+  margin-top: 28px;
+}
+.optionButton,
+.optionActive {
+  padding: 16px 18px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.04);
+  color: #f5f1e6;
+  cursor: pointer;
+  min-height: 72px;
+}
+.optionActive {
+  background: linear-gradient(180deg, rgba(214, 182, 123, 0.2), rgba(255, 255, 255, 0.08));
+  border-color: rgba(214, 182, 123, 0.4);
+}
+.summaryBox {
+  margin-top: 28px;
+  padding: 22px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.langButtons {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 28px;
+}
+.fieldLabel {
+  display: grid;
+  gap: 12px;
+  margin-top: 22px;
+  color: rgba(245, 241, 230, 0.85);
+}
+.fieldSelect,
+.fieldInput {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(0, 0, 0, 0.5);
+  color: #f5f1e6;
+}

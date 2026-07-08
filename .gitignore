@@ -9,6 +9,9 @@ dist/
 web-build/
 expo-env.d.ts
 
+# Build output
+.next/
+
 # Native
 .kotlin/
 *.orig.*
@@ -41,3 +44,5 @@ example
 # generated native folders
 /ios
 /android
+.vercel
+.env*

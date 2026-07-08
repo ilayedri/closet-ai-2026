@@ -1,0 +1,134 @@
+.page {
+  min-height: 100vh;
+  padding: 60px 24px 80px;
+  background: linear-gradient(180deg, rgba(4, 4, 4, 0.95), rgba(4, 4, 4, 1)), url('/assets/images/hero-bg.png') center/cover fixed;
+  color: #f5f1e6;
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 24px;
+  align-items: center;
+  width: min(1200px, 100%);
+  margin: 0 auto;
+  padding: 40px;
+  border-radius: 36px;
+  background: rgba(6, 6, 6, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.heroContent {
+  display: grid;
+  gap: 20px;
+}
+
+.badge {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.35em;
+  color: #d6b67b;
+  font-size: 0.82rem;
+}
+
+.hero h1 {
+  margin: 0;
+  font-size: clamp(2.8rem, 4vw, 4.2rem);
+}
+
+.hero p {
+  margin: 0;
+  color: rgba(245, 241, 230, 0.84);
+  line-height: 1.8;
+}
+
+.heroActions {
+  display: grid;
+  gap: 14px;
+}
+
+.primaryButton,
+.secondaryButton,
+.ghostButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 24px;
+  border-radius: 999px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform 0.24s ease, box-shadow 0.24s ease;
+}
+
+.primaryButton {
+  background: linear-gradient(180deg, #f4d38f, #b78f4a);
+  color: #111;
+}
+
+.secondaryButton {
+  background: rgba(255, 255, 255, 0.08);
+  color: #f5f1e6;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.ghostButton {
+  background: rgba(255, 255, 255, 0.05);
+  color: #f5f1e6;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.primaryButton:hover,
+.secondaryButton:hover,
+.ghostButton:hover {
+  transform: translateY(-1px);
+}
+
+.cardsGrid {
+  width: min(1200px, 100%);
+  margin: 40px auto 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.card {
+  padding: 28px;
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  min-height: 180px;
+}
+
+.card h2 {
+  margin: 0 0 12px;
+}
+
+.card p {
+  margin: 0;
+  color: rgba(245, 241, 230, 0.78);
+  line-height: 1.7;
+}
+
+.footer {
+  width: min(1200px, 100%);
+  margin: 40px auto 0;
+  padding: 24px 30px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: rgba(245, 241, 230, 0.72);
+}
+
+@media (max-width: 960px) {
+  .hero,
+  .cardsGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .page {
+    padding: 32px 18px 64px;
+  }
+}

@@ -1,0 +1,9 @@
+.card {
+  background: rgba(11, 8, 6, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.32);
+  padding: 28px;
+  border-radius: 26px;
+  color: #fff;
+  backdrop-filter: blur(18px);
+}

@@ -1,0 +1,49 @@
+.page {
+  min-height: 100vh;
+  padding: 48px;
+  background: url('/assets/images/hero-bg.png') center/cover fixed;
+  color: #fff;
+}
+.panel {
+  max-width: 620px;
+  margin: 0 auto;
+  padding: 36px;
+  background: rgba(5, 5, 5, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 28px;
+}
+.fieldLabel {
+  display: block;
+  margin-bottom: 18px;
+  color: #fff;
+}
+.fieldInput,
+.fieldSelect {
+  width: 100%;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  padding: 14px;
+  margin-top: 8px;
+}
+.actions {
+  display: flex;
+  gap: 14px;
+  margin-top: 24px;
+}
+.primaryButton,
+.secondaryButton {
+  padding: 12px 20px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+}
+.primaryButton {
+  background: linear-gradient(180deg, #ecc77d, #b78f4a);
+  color: #111;
+}
+.secondaryButton {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}

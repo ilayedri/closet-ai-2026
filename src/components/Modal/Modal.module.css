@@ -1,0 +1,19 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.dialog {
+  background: #0b0b0b;
+  border-radius: 12px;
+  max-width: 900px;
+  width: 90%;
+  padding: 20px;
+  position: relative;
+}
+.close { position: absolute; right: 12px; top: 8px; background:transparent; border:none; color:#fff; font-size:22px; cursor:pointer }
+.content { color:#fff }
