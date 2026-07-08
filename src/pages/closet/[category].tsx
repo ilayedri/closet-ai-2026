@@ -9,6 +9,7 @@ export default function CategoryPage() {
   const { lang } = useLanguage()
   const copy = getSiteCopy(lang).categoryPage
   const brandLabel = lang === 'he' ? 'מותג' : 'Brand'
+  const categoryLabel = lang === 'he' ? 'קטגוריה' : 'Category'
   const { category } = router.query
   const details = typeof category === 'string' ? findCategory(category, lang) : null
   const items = typeof category === 'string' ? itemsByCategory(category) : []
@@ -39,8 +40,8 @@ export default function CategoryPage() {
           {items.map((item) => (
             <div key={item.id} className={styles.itemCard}>
               <div className={styles.imageWrapper}>
-                {item.image ? (
-                  <img src={item.image} alt={item.name} />
+                {item.imageUrl || item.image ? (
+                  <img src={item.imageUrl || item.image} alt={item.name} />
                 ) : (
                   <div className={styles.imagePlaceholder}>
                     <strong>{item.name}</strong>
@@ -51,6 +52,7 @@ export default function CategoryPage() {
               </div>
               <div className={styles.itemInfo}>
                 <strong>{item.name}</strong>
+                <span>{categoryLabel} {details.label}</span>
                 <span>{item.color} · {item.style}</span>
                 {item.brand ? <span>{brandLabel} {item.brand}</span> : null}
                 <span>{copy.season} {item.season}</span>

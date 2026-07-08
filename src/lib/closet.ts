@@ -2,6 +2,8 @@ import type { Lang } from '@/context/LanguageContext'
 import type { ClothingCategory, ClothingSeason } from '@/lib/data-model'
 import { getSiteCopy } from './site-copy'
 
+const DEFAULT_LOCAL_USER_ID = 'local-user'
+
 export type ClosetCategory = {
   id: string
   label: string
@@ -11,7 +13,9 @@ export type ClosetCategory = {
 
 export type ClosetItem = {
   id: string
+  userId: string
   name: string
+  imageUrl?: string
   category: ClothingCategory
   image?: string
   color: string
@@ -44,13 +48,42 @@ export function getCategories(lang: Lang): ClosetCategory[] {
 
 const defaultItems: ClosetItem[] = []
 
+function normalizeClosetItem(item: Partial<ClosetItem>): ClosetItem | null {
+  if (!item.id || !item.name || !item.category) return null
+
+  const normalizedImage = item.imageUrl || item.image
+
+  return {
+    id: item.id,
+    userId: item.userId || DEFAULT_LOCAL_USER_ID,
+    name: item.name,
+    imageUrl: normalizedImage,
+    image: normalizedImage,
+    category: item.category,
+    color: item.color || 'Unknown',
+    style: item.style || 'Casual',
+    season: item.season || 'all-season',
+    brand: item.brand,
+    dateAdded: item.dateAdded || new Date().toISOString().slice(0, 10),
+  }
+}
+
 export function loadClosetItems(): ClosetItem[] {
   if (typeof window === 'undefined') return defaultItems
   try {
     const raw = window.localStorage.getItem('closetItems')
     if (!raw) return defaultItems
-    const parsed = JSON.parse(raw) as ClosetItem[]
-    return Array.isArray(parsed) && parsed.length ? parsed : defaultItems
+    const parsed = JSON.parse(raw) as Partial<ClosetItem>[]
+    if (!Array.isArray(parsed) || parsed.length === 0) return defaultItems
+
+    const normalized = parsed
+      .map((item) => normalizeClosetItem(item))
+      .filter((item): item is ClosetItem => Boolean(item))
+
+    // Persist normalized shape once so upcoming cloud migration has consistent local schema.
+    window.localStorage.setItem('closetItems', JSON.stringify(normalized))
+
+    return normalized
   } catch {
     return defaultItems
   }
@@ -67,7 +100,9 @@ export function saveClosetItems(items: ClosetItem[]) {
 
 export function addClosetItem(item: ClosetItem): ClosetItem[] {
   const items = loadClosetItems()
-  const next = [...items, item]
+  const normalized = normalizeClosetItem(item)
+  if (!normalized) return items
+  const next = [...items, normalized]
   saveClosetItems(next)
   return next
 }

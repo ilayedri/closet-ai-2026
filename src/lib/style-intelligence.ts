@@ -97,17 +97,45 @@ export function updateUserProfile(userId: string, patch: Partial<UserProfileData
 }
 
 export function loadWardrobe(userId = DEFAULT_USER_ID): WardrobeItemData[] {
-  return readStorage<WardrobeItemData[]>(getStorageKey(userId, 'wardrobe'), [])
+  const raw = readStorage<Array<WardrobeItemData | Partial<WardrobeItemData>>>(getStorageKey(userId, 'wardrobe'), [])
+  const normalized = raw
+    .map((item) => normalizeWardrobeItem(item, userId))
+    .filter((item): item is WardrobeItemData => Boolean(item))
+
+  if (normalized.length !== raw.length) {
+    writeStorage(getStorageKey(userId, 'wardrobe'), normalized)
+  }
+
+  return normalized
+}
+
+function normalizeWardrobeItem(item: Partial<WardrobeItemData>, userId: string): WardrobeItemData | null {
+  if (!item.itemId || !item.category) return null
+
+  const imageUrl = item.imageUrl || item.image
+
+  return {
+    itemId: item.itemId,
+    userId: item.userId || userId,
+    imageUrl,
+    image: imageUrl,
+    category: item.category,
+    color: item.color || 'Unknown',
+    style: item.style || 'Casual',
+    season: item.season || 'all-season',
+    brand: item.brand,
+    dateAdded: item.dateAdded || new Date().toISOString().slice(0, 10),
+    wearCount: Number.isFinite(item.wearCount) ? Number(item.wearCount) : 0,
+    ignoreCount: Number.isFinite(item.ignoreCount) ? Number(item.ignoreCount) : 0,
+    lastWornAt: item.lastWornAt,
+  }
 }
 
 export function upsertWardrobeItem(userId: string, item: WardrobeItemData): WardrobeItemData[] {
   const items = loadWardrobe(userId)
   const index = items.findIndex((entry) => entry.itemId === item.itemId)
-  const normalized: WardrobeItemData = {
-    ...item,
-    wearCount: Number.isFinite(item.wearCount) ? item.wearCount : 0,
-    ignoreCount: Number.isFinite(item.ignoreCount) ? item.ignoreCount : 0,
-  }
+  const normalized = normalizeWardrobeItem(item, userId)
+  if (!normalized) return items
 
   const next = [...items]
   if (index >= 0) {

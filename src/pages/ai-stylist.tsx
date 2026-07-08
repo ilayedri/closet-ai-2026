@@ -74,7 +74,9 @@ export default function AiStylistPage() {
     closetItems.forEach((item) => {
       upsertWardrobeItem(DEFAULT_USER_ID, {
         itemId: item.id,
-        image: item.image,
+        userId: item.userId,
+        imageUrl: item.imageUrl || item.image,
+        image: item.imageUrl || item.image,
         category: item.category as 'shirts' | 'pants' | 'shoes' | 'jackets' | 'accessories',
         color: item.color,
         style: item.style,
@@ -123,10 +125,10 @@ export default function AiStylistPage() {
   }
 
   const outfitHeroImage =
-    visualOutfit?.top?.image ||
-    visualOutfit?.outerwear?.image ||
-    visualOutfit?.bottom?.image ||
-    visualOutfit?.shoes?.image ||
+    visualOutfit?.top?.imageUrl || visualOutfit?.top?.image ||
+    visualOutfit?.outerwear?.imageUrl || visualOutfit?.outerwear?.image ||
+    visualOutfit?.bottom?.imageUrl || visualOutfit?.bottom?.image ||
+    visualOutfit?.shoes?.imageUrl || visualOutfit?.shoes?.image ||
     '/assets/images/hero-closet-clean.png'
 
   const componentRows = visualOutfit

@@ -12,6 +12,8 @@ type DetectionInput = {
   style: string
   season: ClothingSeason
   brand?: string
+  categories?: ClothingCategory[]
+  nameByCategory?: Partial<Record<ClothingCategory, string>>
 }
 
 export type DetectedWardrobeItemDraft = {
@@ -84,10 +86,13 @@ function defaultNameForCategory(category: ClothingCategory) {
 }
 
 export function detectOutfitItemsFromPhoto(input: DetectionInput): DetectedWardrobeItemDraft[] {
-  const categories: ClothingCategory[] = ['shirts', 'pants', 'shoes']
+  const categories: ClothingCategory[] =
+    input.categories && input.categories.length
+      ? input.categories
+      : ['shirts', 'pants', 'shoes', 'accessories']
 
   return categories.map((category) => ({
-    name: defaultNameForCategory(category),
+    name: input.nameByCategory?.[category] || defaultNameForCategory(category),
     category,
     image: input.image,
     color: input.color,
@@ -128,9 +133,13 @@ export function loadSeparationCandidates(userId: string): SeparatedClothingCandi
 }
 
 export function convertCandidateToWardrobeItem(candidate: SeparatedClothingCandidate): WardrobeItemData {
+  const imageUrl = candidate.image || candidate.sourceImage
+
   return {
     itemId: `item-${candidate.candidateId}`,
-    image: candidate.image || candidate.sourceImage,
+    userId: candidate.userId,
+    imageUrl,
+    image: imageUrl,
     category: candidate.category,
     color: candidate.color || 'Unknown',
     style: candidate.style || 'Casual',

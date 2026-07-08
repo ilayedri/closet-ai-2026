@@ -36,6 +36,8 @@ export type UserProfileData = {
 
 export type WardrobeItemData = {
   itemId: string
+  userId: string
+  imageUrl?: string
   image?: string
   category: ClothingCategory
   color: string

@@ -52,8 +52,8 @@ export default function UserPage() {
         <section className={styles.visualGrid}>
           {items.slice(0, 8).map((item) => (
             <div key={item.id} className={styles.itemCard}>
-              {item.image ? (
-                <img src={item.image} alt={item.name} className={styles.itemImage} />
+              {item.imageUrl || item.image ? (
+                <img src={item.imageUrl || item.image} alt={item.name} className={styles.itemImage} />
               ) : (
                 <div className={styles.placeholder}>
                   <span>{copy.noImage}</span>

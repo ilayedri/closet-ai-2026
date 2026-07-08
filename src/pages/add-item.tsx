@@ -8,6 +8,8 @@ import { useRouter } from 'next/router'
 import { type ChangeEvent, useEffect, useRef, useState } from 'react'
 import styles from './add-item.module.css'
 
+const defaultDetectedCategories: ClothingCategory[] = ['shirts', 'pants', 'shoes', 'accessories']
+
 export default function AddItemPage() {
   const router = useRouter()
   const { lang } = useLanguage()
@@ -22,6 +24,7 @@ export default function AddItemPage() {
   const [image, setImage] = useState('')
   const [sourceMode, setSourceMode] = useState<'camera' | 'upload'>('upload')
   const [isOutfitPhoto, setIsOutfitPhoto] = useState(false)
+  const [detectedCategories, setDetectedCategories] = useState<ClothingCategory[]>(defaultDetectedCategories)
   const [queuedForSeparation, setQueuedForSeparation] = useState(false)
   const [uploadFileName, setUploadFileName] = useState('')
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -54,6 +57,7 @@ export default function AddItemPage() {
     const normalizedImage = image.trim() || undefined
 
     if (isOutfitPhoto && normalizedImage) {
+      const selectedCategories = detectedCategories.length ? detectedCategories : defaultDetectedCategories
       enqueueOutfitPhotoForSeparation(DEFAULT_USER_ID, normalizedImage)
       const detectedItems = detectOutfitItemsFromPhoto({
         image: normalizedImage,
@@ -61,14 +65,23 @@ export default function AddItemPage() {
         style,
         season,
         brand: brand || undefined,
+        categories: selectedCategories,
+        nameByCategory: Object.fromEntries(
+          selectedCategories.map((selectedCategory) => {
+            const match = categories.find((item) => item.id === selectedCategory)
+            return [selectedCategory, match?.label || selectedCategory]
+          })
+        ) as Partial<Record<ClothingCategory, string>>,
       })
 
       detectedItems.forEach((detected, index) => {
         const itemId = `${Date.now()}-${index}`
         addClosetItem({
           id: itemId,
+          userId: DEFAULT_USER_ID,
           name: detected.name,
           category: detected.category,
+          imageUrl: detected.image,
           image: detected.image,
           color: detected.color,
           style: detected.style,
@@ -79,6 +92,8 @@ export default function AddItemPage() {
 
         upsertWardrobeItem(DEFAULT_USER_ID, {
           itemId,
+          userId: DEFAULT_USER_ID,
+          imageUrl: detected.image,
           image: detected.image,
           category: detected.category,
           color: detected.color,
@@ -100,8 +115,10 @@ export default function AddItemPage() {
 
     addClosetItem({
       id: itemId,
+      userId: DEFAULT_USER_ID,
       name,
       category,
+      imageUrl: normalizedImage,
       image: normalizedImage,
       color,
       style,
@@ -112,6 +129,8 @@ export default function AddItemPage() {
 
     upsertWardrobeItem(DEFAULT_USER_ID, {
       itemId,
+      userId: DEFAULT_USER_ID,
+      imageUrl: normalizedImage,
       image: normalizedImage,
       category,
       color,
@@ -124,6 +143,16 @@ export default function AddItemPage() {
     })
 
     router.push('/closet')
+  }
+
+  function toggleDetectedCategory(value: ClothingCategory) {
+    setDetectedCategories((current) => {
+      if (current.includes(value)) {
+        if (current.length === 1) return current
+        return current.filter((item) => item !== value)
+      }
+      return [...current, value]
+    })
   }
 
   return (
@@ -230,7 +259,23 @@ export default function AddItemPage() {
         </label>
 
         {isOutfitPhoto && (
-          <p className={styles.cameraHint}>{copy.fullOutfitPhotoHint}</p>
+          <div className={styles.detectedSection}>
+            <p className={styles.cameraHint}>{copy.fullOutfitPhotoHint}</p>
+            <p className={styles.detectedTitle}>{copy.detectedItemsTitle}</p>
+
+            <div className={styles.detectedGrid}>
+              {categories.map((item) => (
+                <button
+                  key={`detect-${item.id}`}
+                  type="button"
+                  className={detectedCategories.includes(item.id as ClothingCategory) ? styles.detectedChipActive : styles.detectedChip}
+                  onClick={() => toggleDetectedCategory(item.id as ClothingCategory)}
+                >
+                  {item.emoji} {item.label}
+                </button>
+              ))}
+            </div>
+          </div>
         )}
 
         {queuedForSeparation && (
