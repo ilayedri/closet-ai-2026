@@ -8,7 +8,6 @@ export type ClosetCategory = {
   id: string
   label: string
   description: string
-  coverImageUrl?: string
 }
 
 export type ClosetItem = {
@@ -42,7 +41,6 @@ export function getCategories(lang: Lang): ClosetCategory[] {
     id: category.id,
     label: copy[category.id as keyof typeof copy].label,
     description: copy[category.id as keyof typeof copy].description,
-    coverImageUrl: category.coverImageUrl,
   }))
 }
 

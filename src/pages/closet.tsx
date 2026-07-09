@@ -12,7 +12,6 @@ export default function ClosetPage() {
   const categories = getCategories(lang)
   const [hasUserItems, setHasUserItems] = useState(false)
   const [categoryCounts, setCategoryCounts] = useState<Record<string, number>>({})
-  const [brokenCategoryCovers, setBrokenCategoryCovers] = useState<Record<string, true>>({})
 
   useEffect(() => {
     const items = loadClosetItems()
@@ -51,19 +50,6 @@ export default function ClosetPage() {
               type="button"
             >
               <div className={styles.categoryImageWrap}>
-                {category.coverImageUrl && !brokenCategoryCovers[category.id] && (
-                  <img
-                    src={category.coverImageUrl}
-                    alt={category.label}
-                    className={styles.categoryImage}
-                    onError={() =>
-                      setBrokenCategoryCovers((current) => ({
-                        ...current,
-                        [category.id]: true,
-                      }))
-                    }
-                  />
-                )}
                 <div className={styles.categoryImagePlaceholder}>
                   <small>{category.label}</small>
                 </div>
