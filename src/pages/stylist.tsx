@@ -1,1 +1,2 @@
-export { default } from './ai-stylist'
+export { default } from './ai-stylist';
+

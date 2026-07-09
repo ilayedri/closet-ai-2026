@@ -196,6 +196,26 @@
   margin-top: 8px;
 }
 
+.aiCategoryValue {
+  margin-top: 8px;
+  padding: 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(214, 182, 123, 0.42);
+  background: linear-gradient(180deg, rgba(214, 182, 123, 0.14), rgba(255, 255, 255, 0.04));
+  display: grid;
+  gap: 6px;
+}
+
+.aiCategoryValue strong {
+  color: #f5f1e6;
+  font-size: 1rem;
+}
+
+.aiCategoryValue span {
+  color: rgba(245, 241, 230, 0.76);
+  font-size: 0.9rem;
+}
+
 .actions {
   display: flex;
   flex-wrap: wrap;

@@ -3,12 +3,30 @@ import { addClosetItem, getCategories } from '@/lib/closet'
 import type { ClothingCategory, ClothingSeason } from '@/lib/data-model'
 import { getSiteCopy } from '@/lib/site-copy'
 import { DEFAULT_USER_ID, ensureUserProfile, upsertWardrobeItem } from '@/lib/style-intelligence'
-import { detectOutfitItemsFromPhoto, enqueueOutfitPhotoForSeparation } from '@/lib/visual-wardrobe'
+import { detectOutfitItemsFromPhoto, detectSingleItemCategory, detectSingleItemCategoryDetails, enqueueOutfitPhotoForSeparation } from '@/lib/visual-wardrobe'
 import { useRouter } from 'next/router'
 import { type ChangeEvent, useEffect, useRef, useState } from 'react'
 import styles from './add-item.module.css'
 
-const defaultDetectedCategories: ClothingCategory[] = ['shirts', 'pants', 'shoes', 'accessories']
+const ITEM_DEBUG_LOG_KEY = 'closetai:item-processing-debug'
+
+function logItemProcessing(step: string, payload: Record<string, unknown>) {
+  if (typeof window === 'undefined') return
+
+  try {
+    const current = window.localStorage.getItem(ITEM_DEBUG_LOG_KEY)
+    const parsed = current ? (JSON.parse(current) as Array<Record<string, unknown>>) : []
+    const nextEntry = {
+      step,
+      at: new Date().toISOString(),
+      ...payload,
+    }
+
+    window.localStorage.setItem(ITEM_DEBUG_LOG_KEY, JSON.stringify([nextEntry, ...parsed].slice(0, 40)))
+  } catch {
+    // ignore debug log failures
+  }
+}
 
 export default function AddItemPage() {
   const router = useRouter()
@@ -16,7 +34,6 @@ export default function AddItemPage() {
   const copy = getSiteCopy(lang).addItem
   const categories = getCategories(lang)
   const [name, setName] = useState<string>(copy.newItem)
-  const [category, setCategory] = useState<ClothingCategory>('shirts')
   const [color, setColor] = useState<string>(copy.defaultColor)
   const [style, setStyle] = useState<string>(copy.defaultStyle)
   const [season, setSeason] = useState<ClothingSeason>('all-season')
@@ -24,7 +41,7 @@ export default function AddItemPage() {
   const [image, setImage] = useState('')
   const [sourceMode, setSourceMode] = useState<'camera' | 'upload'>('upload')
   const [isOutfitPhoto, setIsOutfitPhoto] = useState(false)
-  const [detectedCategories, setDetectedCategories] = useState<ClothingCategory[]>(defaultDetectedCategories)
+  const [detectedCategories, setDetectedCategories] = useState<ClothingCategory[]>([])
   const [queuedForSeparation, setQueuedForSeparation] = useState(false)
   const [uploadFileName, setUploadFileName] = useState('')
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -32,6 +49,25 @@ export default function AddItemPage() {
   useEffect(() => {
     ensureUserProfile(DEFAULT_USER_ID, lang)
   }, [lang])
+
+  useEffect(() => {
+    if (!isOutfitPhoto) {
+      setDetectedCategories([])
+      return
+    }
+
+    const categoriesFromSignals = detectOutfitItemsFromPhoto({
+      image,
+      name,
+      fileName: uploadFileName,
+      color,
+      style,
+      season,
+      brand: brand || undefined,
+    }).map((item) => item.category)
+
+    setDetectedCategories(categoriesFromSignals)
+  }, [isOutfitPhoto, image, name, uploadFileName, color, style, season, brand])
 
   function openUploadPicker() {
     fileInputRef.current?.click()
@@ -47,6 +83,19 @@ export default function AddItemPage() {
       if (typeof result === 'string') {
         setImage(result)
         setUploadFileName(file.name)
+        const detection = detectSingleItemCategoryDetails({
+          name,
+          fileName: file.name,
+          style,
+          brand,
+        })
+        setDetectedCategories([detection.category])
+        logItemProcessing('upload-received', {
+          fileName: file.name,
+          hasImage: true,
+          detectedCategory: detection.category,
+          confidence: detection.confidence,
+        })
       }
     }
     reader.readAsDataURL(file)
@@ -55,12 +104,43 @@ export default function AddItemPage() {
   function handleSubmit() {
     const dateAdded = new Date().toISOString().slice(0, 10)
     const normalizedImage = image.trim() || undefined
+    const detection = detectSingleItemCategoryDetails({
+      name,
+      fileName: uploadFileName,
+      style,
+      brand,
+    })
+    const autoCategory = detection.category
+    const safeName = name.trim() || categories.find((item) => item.id === autoCategory)?.label || copy.newItem
+
+    logItemProcessing('recognition', {
+      fileName: uploadFileName,
+      name,
+      style,
+      brand,
+      detectedCategory: autoCategory,
+      confidence: detection.confidence,
+      sourceText: detection.sourceText,
+      isOutfitPhoto,
+    })
 
     if (isOutfitPhoto && normalizedImage) {
-      const selectedCategories = detectedCategories.length ? detectedCategories : defaultDetectedCategories
+      const selectedCategories = detectOutfitItemsFromPhoto({
+        image: normalizedImage,
+        name,
+        fileName: uploadFileName,
+        color,
+        style,
+        season,
+        brand: brand || undefined,
+      }).map((item) => item.category)
+
+      setDetectedCategories(selectedCategories)
       enqueueOutfitPhotoForSeparation(DEFAULT_USER_ID, normalizedImage)
       const detectedItems = detectOutfitItemsFromPhoto({
         image: normalizedImage,
+        name,
+        fileName: uploadFileName,
         color,
         style,
         season,
@@ -104,6 +184,13 @@ export default function AddItemPage() {
           wearCount: 0,
           ignoreCount: 0,
         })
+
+        logItemProcessing('item-created-outfit', {
+          itemId,
+          category: detected.category,
+          hasImage: Boolean(detected.image),
+          name: detected.name,
+        })
       })
 
       setQueuedForSeparation(true)
@@ -116,8 +203,8 @@ export default function AddItemPage() {
     addClosetItem({
       id: itemId,
       userId: DEFAULT_USER_ID,
-      name,
-      category,
+      name: safeName,
+      category: autoCategory,
       imageUrl: normalizedImage,
       image: normalizedImage,
       color,
@@ -132,7 +219,7 @@ export default function AddItemPage() {
       userId: DEFAULT_USER_ID,
       imageUrl: normalizedImage,
       image: normalizedImage,
-      category,
+      category: autoCategory,
       color,
       style,
       season,
@@ -142,18 +229,36 @@ export default function AddItemPage() {
       ignoreCount: 0,
     })
 
+    logItemProcessing('item-created-single', {
+      itemId,
+      category: autoCategory,
+      hasImage: Boolean(normalizedImage),
+      name: safeName,
+    })
+
+    logItemProcessing('storage-written', {
+      closetItemsCount: (() => {
+        try {
+          const raw = typeof window !== 'undefined' ? window.localStorage.getItem('closetItems') : null
+          if (!raw) return 0
+          const parsed = JSON.parse(raw)
+          return Array.isArray(parsed) ? parsed.length : 0
+        } catch {
+          return -1
+        }
+      })(),
+      lastCategory: autoCategory,
+    })
+
     router.push('/closet')
   }
-
-  function toggleDetectedCategory(value: ClothingCategory) {
-    setDetectedCategories((current) => {
-      if (current.includes(value)) {
-        if (current.length === 1) return current
-        return current.filter((item) => item !== value)
-      }
-      return [...current, value]
-    })
-  }
+  const autoCategory = detectSingleItemCategory({
+    name,
+    fileName: uploadFileName,
+    style,
+    brand,
+  })
+  const autoCategoryLabel = categories.find((item) => item.id === autoCategory)?.label || autoCategory
 
   return (
     <main className={styles.page}>
@@ -209,13 +314,10 @@ export default function AddItemPage() {
 
         <label className={styles.fieldLabel}>
           {copy.category}
-          <select className={styles.fieldSelect} value={category} onChange={(event) => setCategory(event.target.value as ClothingCategory)}>
-            {categories.map((item) => (
-              <option key={item.id} value={item.id}>
-                {item.label}
-              </option>
-            ))}
-          </select>
+          <div className={styles.aiCategoryValue}>
+            <strong>{autoCategoryLabel}</strong>
+            <span>{copy.autoCategoryHint}</span>
+          </div>
         </label>
 
         <label className={styles.fieldLabel}>
@@ -261,19 +363,19 @@ export default function AddItemPage() {
         {isOutfitPhoto && (
           <div className={styles.detectedSection}>
             <p className={styles.cameraHint}>{copy.fullOutfitPhotoHint}</p>
-            <p className={styles.detectedTitle}>{copy.detectedItemsTitle}</p>
+            <p className={styles.detectedTitle}>{copy.detectedItemsAuto}</p>
 
             <div className={styles.detectedGrid}>
-              {categories.map((item) => (
-                <button
-                  key={`detect-${item.id}`}
-                  type="button"
-                  className={detectedCategories.includes(item.id as ClothingCategory) ? styles.detectedChipActive : styles.detectedChip}
-                  onClick={() => toggleDetectedCategory(item.id as ClothingCategory)}
-                >
-                  {item.emoji} {item.label}
-                </button>
-              ))}
+              {detectedCategories.map((detectedCategory) => {
+                const categoryMeta = categories.find((item) => item.id === detectedCategory)
+                if (!categoryMeta) return null
+
+                return (
+                  <div key={`detect-${categoryMeta.id}`} className={styles.detectedChipActive}>
+                    {categoryMeta.label}
+                  </div>
+                )
+              })}
             </div>
           </div>
         )}

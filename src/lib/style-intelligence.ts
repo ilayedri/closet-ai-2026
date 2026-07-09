@@ -1,14 +1,15 @@
 import type { Lang } from '@/context/LanguageContext'
 import { loadOnboardingState } from '@/lib/onboarding'
 import type {
-  AIStyleIntelligenceData,
-  ClosetAIDataBundle,
-  OutfitItemReference,
-  OutfitFeedback,
-  OutfitHistoryData,
-  StyleCategory,
-  UserProfileData,
-  WardrobeItemData,
+    AIStyleIntelligenceData,
+    ClosetAIDataBundle,
+    Gender,
+    OutfitFeedback,
+    OutfitHistoryData,
+    OutfitItemReference,
+    StyleCategory,
+    UserProfileData,
+    WardrobeItemData,
 } from './data-model'
 
 const STORAGE_PREFIX = 'closetai:v1'
@@ -59,24 +60,107 @@ function normalizeStyles(selectedStyles: string[] | string): { primary: StyleCat
   return { primary, secondary: secondary.length ? secondary : fallbackSecondary }
 }
 
+export function buildStylePreference(selectedStyles: string[] | string): UserProfileData['preferredStyles'] {
+  const normalized = normalizeStyles(selectedStyles)
+  return {
+    primaryStyle: normalized.primary,
+    secondaryStyles: normalized.secondary,
+  }
+}
+
+function normalizeStringArray(value: unknown): string[] {
+  if (!Array.isArray(value)) return []
+  return value.filter((item): item is string => typeof item === 'string' && item.trim().length > 0)
+}
+
+function normalizeGender(value: unknown): Gender | undefined {
+  if (value === 'male' || value === 'female' || value === 'prefer-not-to-say') return value
+  return undefined
+}
+
+function normalizeUserProfile(
+  profile: Partial<UserProfileData>,
+  userId: string,
+  language: Lang,
+  fallbackStyles: string[]
+): UserProfileData {
+  const preferenceSource = normalizeStringArray(profile.personalization?.preferences)
+  const clothingPreferences = normalizeStringArray(profile.clothingPreferences)
+  const clothingHabits = normalizeStringArray(profile.clothingHabits)
+  const favoriteColors = normalizeStringArray(profile.favoriteColors)
+  const styleConfig = profile.preferredStyles || buildStylePreference(fallbackStyles)
+
+  const weatherLocation =
+    typeof profile.weatherLocation === 'string' && profile.weatherLocation.trim().length > 0
+      ? profile.weatherLocation.trim()
+      : typeof profile.location === 'string' && profile.location.trim().length > 0
+        ? profile.location.trim()
+        : undefined
+
+  const safeCreatedAt = typeof profile.createdAt === 'string' && profile.createdAt ? profile.createdAt : nowIso()
+
+  return {
+    userId: profile.userId || userId,
+    language: profile.language === 'en' ? 'en' : profile.language === 'he' ? 'he' : language,
+    gender: normalizeGender(profile.gender),
+    ageRange: profile.ageRange,
+    location: weatherLocation,
+    weatherLocation,
+    preferredStyles: styleConfig,
+    favoriteColors: favoriteColors.length ? favoriteColors : ['Black', 'Navy', 'Ivory'],
+    clothingPreferences: clothingPreferences.length ? clothingPreferences : ['Minimal luxury', 'Tailored silhouettes'],
+    clothingHabits,
+    personalization: {
+      preferences: preferenceSource.length ? preferenceSource : clothingPreferences,
+      weatherLocation,
+      clothingHabits,
+    },
+    createdAt: safeCreatedAt,
+    updatedAt: typeof profile.updatedAt === 'string' && profile.updatedAt ? profile.updatedAt : safeCreatedAt,
+  }
+}
+
+function splitListInput(rawValue: string): string[] {
+  return rawValue
+    .split(/[\n,]/g)
+    .map((item) => item.trim())
+    .filter((item) => item.length > 0)
+}
+
 export function ensureUserProfile(userId = DEFAULT_USER_ID, language: Lang = 'he'): UserProfileData {
   const key = getStorageKey(userId, 'profile')
   const existing = readStorage<UserProfileData | null>(key, null)
-  if (existing) return existing
-
   const onboarding = loadOnboardingState()
-  const styleConfig = normalizeStyles(onboarding.style)
+
+  if (existing) {
+    const normalizedExisting = normalizeUserProfile(existing, userId, language, onboarding.style)
+    writeStorage(key, normalizedExisting)
+    return normalizedExisting
+  }
+
+  const stylePreference = buildStylePreference(onboarding.style)
+  const aboutPreferences = splitListInput(onboarding.about)
+  const habits = splitListInput(onboarding.clothingHabits)
+  const weatherLocation = onboarding.weatherLocation.trim() || undefined
+  const createdAt = nowIso()
+
   const profile: UserProfileData = {
     userId,
     language: onboarding.language || language,
-    preferredStyles: {
-      primaryStyle: styleConfig.primary,
-      secondaryStyles: styleConfig.secondary,
-    },
+    gender: onboarding.gender,
+    location: weatherLocation,
+    weatherLocation,
+    preferredStyles: stylePreference,
     favoriteColors: ['Black', 'Navy', 'Ivory'],
-    clothingPreferences: ['Minimal luxury', 'Tailored silhouettes'],
-    createdAt: nowIso(),
-    updatedAt: nowIso(),
+    clothingPreferences: aboutPreferences.length ? aboutPreferences : ['Minimal luxury', 'Tailored silhouettes'],
+    clothingHabits: habits,
+    personalization: {
+      preferences: aboutPreferences,
+      weatherLocation,
+      clothingHabits: habits,
+    },
+    createdAt,
+    updatedAt: createdAt,
   }
 
   writeStorage(key, profile)
@@ -85,10 +169,25 @@ export function ensureUserProfile(userId = DEFAULT_USER_ID, language: Lang = 'he
 
 export function updateUserProfile(userId: string, patch: Partial<UserProfileData>): UserProfileData {
   const current = ensureUserProfile(userId)
+  const nextWeatherLocation =
+    patch.weatherLocation !== undefined ? patch.weatherLocation : patch.location !== undefined ? patch.location : current.weatherLocation
+
+  const nextPreferences = patch.personalization?.preferences ?? patch.clothingPreferences ?? current.personalization.preferences
+  const nextHabits = patch.personalization?.clothingHabits ?? patch.clothingHabits ?? current.personalization.clothingHabits
+
   const next: UserProfileData = {
     ...current,
     ...patch,
+    weatherLocation: nextWeatherLocation,
+    location: nextWeatherLocation,
     preferredStyles: patch.preferredStyles ? patch.preferredStyles : current.preferredStyles,
+    clothingPreferences: patch.clothingPreferences ? patch.clothingPreferences : current.clothingPreferences,
+    clothingHabits: patch.clothingHabits ? patch.clothingHabits : current.clothingHabits,
+    personalization: {
+      preferences: normalizeStringArray(nextPreferences),
+      weatherLocation: nextWeatherLocation,
+      clothingHabits: normalizeStringArray(nextHabits),
+    },
     updatedAt: nowIso(),
   }
 

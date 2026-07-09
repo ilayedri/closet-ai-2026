@@ -1,5 +1,5 @@
+import { DEFAULT_USER_ID, ensureUserProfile, updateUserProfile } from '@/lib/style-intelligence';
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { DEFAULT_USER_ID, ensureUserProfile, updateUserProfile } from '@/lib/style-intelligence'
 
 export type Lang = 'en' | 'he'
 type ContextType = { lang: Lang; setLang: (l: Lang) => void }

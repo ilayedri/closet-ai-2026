@@ -2,12 +2,12 @@ import { useLanguage } from '@/context/LanguageContext'
 import { loadClosetItems } from '@/lib/closet'
 import { getSiteCopy } from '@/lib/site-copy'
 import {
-  DEFAULT_USER_ID,
-  ensureUserProfile,
-  recordOutfit,
-  refreshIntelligence,
-  updateUserProfile,
-  upsertWardrobeItem,
+    DEFAULT_USER_ID,
+    ensureUserProfile,
+    recordOutfit,
+    refreshIntelligence,
+    updateUserProfile,
+    upsertWardrobeItem,
 } from '@/lib/style-intelligence'
 import Link from 'next/link'
 import { useRouter } from 'next/router'

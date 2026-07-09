@@ -19,6 +19,11 @@ export default function ClosetPage() {
     setCategoryCounts(getCategoryItemCounts())
   }, [router.asPath])
 
+  const labels = {
+    categoryCount: lang === 'he' ? 'פריטים' : 'items',
+    openCloset: lang === 'he' ? 'פתח ארון' : 'Open Closet',
+  }
+
   return (
     <main className={styles.page}>
       <div className={styles.inner}>
@@ -34,31 +39,31 @@ export default function ClosetPage() {
           </button>
         </header>
 
-        <section className={styles.processGrid}>
-          {copy.process.map((step) => (
-            <article key={step.step} className={styles.processCard}>
-              <span>{step.step}</span>
-              <h3>{step.title}</h3>
-              <p>{step.text}</p>
-            </article>
-          ))}
-        </section>
-
         <div className={styles.categoryGrid}>
           {categories.map((category) => (
+            (() => {
+              return (
             <button
               key={category.id}
               className={styles.categoryCard}
               onClick={() => router.push(`/closet/${category.id}`)}
               type="button"
             >
-              <span className={styles.categoryEmoji}>{category.emoji}</span>
-              <div>
+              <div className={styles.categoryImageWrap}>
+                <img src={category.coverImageUrl} alt={category.label} className={styles.categoryImage} />
+                <div className={styles.categoryImagePlaceholder}>
+                  <small>{category.label}</small>
+                </div>
+              </div>
+
+              <div className={styles.categoryBody}>
                 <h3>{category.label}</h3>
-                <p>{category.description}</p>
-                <small>{categoryCounts[category.id] ?? 0} {copy.itemsCountLabel}</small>
+                <strong>{categoryCounts[category.id] ?? 0} {labels.categoryCount}</strong>
+                <small>{labels.openCloset}</small>
               </div>
             </button>
+              )
+            })()
           ))}
         </div>
 

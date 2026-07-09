@@ -13,7 +13,7 @@ export const styleCategories: StyleCategory[] = [
 
 export type ClothingCategory = 'shirts' | 'pants' | 'shoes' | 'jackets' | 'accessories'
 export type ClothingSeason = 'spring' | 'summer' | 'autumn' | 'winter' | 'all-season'
-export type Gender = 'female' | 'male' | 'non-binary' | 'prefer-not-to-say'
+export type Gender = 'female' | 'male' | 'prefer-not-to-say'
 export type AgeRange = '18-24' | '25-34' | '35-44' | '45-54' | '55+'
 
 export type StylePreference = {
@@ -27,9 +27,16 @@ export type UserProfileData = {
   gender?: Gender
   ageRange?: AgeRange
   location?: string
+  weatherLocation?: string
   preferredStyles: StylePreference
   favoriteColors: string[]
   clothingPreferences: string[]
+  clothingHabits: string[]
+  personalization: {
+    preferences: string[]
+    weatherLocation?: string
+    clothingHabits: string[]
+  }
   createdAt: string
   updatedAt: string
 }

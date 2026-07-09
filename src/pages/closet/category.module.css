@@ -24,7 +24,7 @@
   justify-content: space-between;
   gap: 16px;
   align-items: center;
-  margin-bottom: 28px;
+  margin-bottom: 20px;
 }
 .splash {
   text-transform: uppercase;
@@ -40,20 +40,65 @@
   color: #111;
   cursor: pointer;
 }
+.categoryHero {
+  position: relative;
+  border-radius: 26px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 24px;
+  min-height: 250px;
+}
+
+.categoryHeroImage {
+  width: 100%;
+  height: 100%;
+  min-height: 250px;
+  object-fit: cover;
+  display: block;
+}
+
+.categoryHeroOverlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  align-content: end;
+  gap: 8px;
+  padding: 18px;
+  background: linear-gradient(180deg, rgba(5, 5, 5, 0.1), rgba(5, 5, 5, 0.74));
+}
+
+.categoryHeroOverlay strong {
+  font-size: 1.22rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #f5f1e6;
+}
+
+.categoryHeroOverlay span {
+  color: #d6b67b;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
 .grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 18px;
+  gap: 20px;
 }
 .itemCard {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 24px;
+  border-radius: 28px;
   overflow: hidden;
+  transition: transform 220ms ease, border-color 220ms ease;
+}
+
+.itemCard:hover {
+  transform: translateY(-3px);
+  border-color: rgba(214, 182, 123, 0.52);
 }
 .imageWrapper {
   width: 100%;
-  height: 240px;
+  height: 260px;
   overflow: hidden;
 }
 .imageWrapper img {
@@ -84,14 +129,22 @@
 .itemInfo {
   padding: 18px;
   display: grid;
-  gap: 8px;
+  gap: 10px;
 }
 .itemInfo strong {
-  font-size: 1rem;
+  font-size: 1.04rem;
 }
 .itemInfo span {
-  color: #dcd7c9;
-  font-size: 0.95rem;
+  color: rgba(245, 241, 230, 0.84);
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+
+.emptyText {
+  margin: 0;
+  color: rgba(245, 241, 230, 0.82);
+  line-height: 1.8;
+  padding: 10px 4px;
 }
 
 @media (max-width: 960px) {

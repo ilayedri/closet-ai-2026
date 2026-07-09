@@ -9,7 +9,7 @@ export default function Onboard3() {
   const router = useRouter()
   const { lang } = useLanguage()
   const copy = getSiteCopy(lang).onboarding3
-  const [selectedStyles, setSelectedStyles] = useState<string[]>(['Minimal'])
+  const [selectedStyles, setSelectedStyles] = useState<string[]>(['Casual'])
 
   useEffect(() => {
     const saved = loadOnboardingState()

@@ -7,8 +7,8 @@ const DEFAULT_LOCAL_USER_ID = 'local-user'
 export type ClosetCategory = {
   id: string
   label: string
-  emoji: string
   description: string
+  coverImageUrl: string
 }
 
 export type ClosetItem = {
@@ -26,11 +26,11 @@ export type ClosetItem = {
 }
 
 const categoryMeta = [
-  { id: 'shirts', emoji: '👕' },
-  { id: 'pants', emoji: '👖' },
-  { id: 'shoes', emoji: '👟' },
-  { id: 'jackets', emoji: '🧥' },
-  { id: 'accessories', emoji: '⌚' },
+  { id: 'shirts', coverImageUrl: '/assets/images/shirt.jpg' },
+  { id: 'pants', coverImageUrl: '/assets/images/pants.jpg' },
+  { id: 'shoes', coverImageUrl: '/assets/images/shoes.jpg' },
+  { id: 'jackets', coverImageUrl: '/assets/images/blazer.jpg' },
+  { id: 'accessories', coverImageUrl: '/assets/images/accessories.jpg' },
 ]
 
 export const categories: ClosetCategory[] = getCategories('en')
@@ -40,23 +40,56 @@ export function getCategories(lang: Lang): ClosetCategory[] {
 
   return categoryMeta.map((category) => ({
     id: category.id,
-    emoji: category.emoji,
     label: copy[category.id as keyof typeof copy].label,
     description: copy[category.id as keyof typeof copy].description,
+    coverImageUrl: category.coverImageUrl,
   }))
+}
+
+function hasKnownImagePrefix(value: string) {
+  return (
+    value.startsWith('data:image/') ||
+    value.startsWith('blob:') ||
+    value.startsWith('http://') ||
+    value.startsWith('https://') ||
+    value.startsWith('/')
+  )
+}
+
+export function resolveItemImageSource(value?: string): string | undefined {
+  if (!value) return undefined
+
+  const trimmed = value.trim()
+  if (!trimmed) return undefined
+  if (hasKnownImagePrefix(trimmed)) return trimmed
+
+  // Convert legacy relative paths to absolute public paths when possible.
+  if (trimmed.startsWith('assets/')) return `/${trimmed}`
+  if (/^[a-zA-Z0-9._-]+\.(png|jpg|jpeg|webp|gif|avif)$/i.test(trimmed)) return `/assets/images/${trimmed}`
+
+  return undefined
 }
 
 const defaultItems: ClosetItem[] = []
 
-function normalizeClosetItem(item: Partial<ClosetItem>): ClosetItem | null {
-  if (!item.id || !item.name || !item.category) return null
+function fallbackItemName(category: ClothingCategory) {
+  if (category === 'shirts') return 'Shirt'
+  if (category === 'pants') return 'Pants'
+  if (category === 'shoes') return 'Shoes'
+  if (category === 'jackets') return 'Jacket'
+  return 'Accessory'
+}
 
-  const normalizedImage = item.imageUrl || item.image
+function normalizeClosetItem(item: Partial<ClosetItem>): ClosetItem | null {
+  if (!item.id || !item.category) return null
+
+  const normalizedImage = resolveItemImageSource(item.imageUrl || item.image)
+  const normalizedName = typeof item.name === 'string' && item.name.trim().length > 0 ? item.name.trim() : fallbackItemName(item.category)
 
   return {
     id: item.id,
     userId: item.userId || DEFAULT_LOCAL_USER_ID,
-    name: item.name,
+    name: normalizedName,
     imageUrl: normalizedImage,
     image: normalizedImage,
     category: item.category,
