@@ -101,6 +101,11 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  display: none;
+}
+
+.categoryImageWrap img {
+  display: none !important;
 }
 
 .categoryImagePlaceholder {
@@ -109,7 +114,7 @@
   display: grid;
   align-content: end;
   padding: 14px;
-  background: linear-gradient(180deg, rgba(6, 6, 6, 0.18), rgba(6, 6, 6, 0.68));
+  background: linear-gradient(180deg, rgba(6, 6, 6, 0.96), rgba(6, 6, 6, 0.98));
 }
 
 .categoryImagePlaceholder small {
