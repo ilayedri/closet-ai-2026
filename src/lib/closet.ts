@@ -8,7 +8,7 @@ export type ClosetCategory = {
   id: string
   label: string
   description: string
-  coverImageUrl: string
+  coverImageUrl?: string
 }
 
 export type ClosetItem = {
@@ -26,11 +26,11 @@ export type ClosetItem = {
 }
 
 const categoryMeta = [
-  { id: 'shirts', coverImageUrl: '/assets/images/shirt.jpg' },
-  { id: 'pants', coverImageUrl: '/assets/images/pants.jpg' },
-  { id: 'shoes', coverImageUrl: '/assets/images/shoes.jpg' },
-  { id: 'jackets', coverImageUrl: '/assets/images/blazer.jpg' },
-  { id: 'accessories', coverImageUrl: '/assets/images/accessories.jpg' },
+  { id: 'shirts' },
+  { id: 'pants' },
+  { id: 'shoes' },
+  { id: 'jackets' },
+  { id: 'accessories' },
 ]
 
 export const categories: ClosetCategory[] = getCategories('en')

@@ -17,6 +17,7 @@ export default function CategoryPage() {
   const details = typeof category === 'string' ? findCategory(category, lang) : null
   const items = typeof category === 'string' ? itemsByCategory(category) : []
   const [brokenItemKeys, setBrokenItemKeys] = useState<Record<string, true>>({})
+  const [isHeroImageBroken, setIsHeroImageBroken] = useState(false)
 
   if (!details) {
     return <div className={styles.page}>{copy.notFound}</div>
@@ -41,7 +42,14 @@ export default function CategoryPage() {
         </header>
 
         <section className={styles.categoryHero}>
-          <img src={details.coverImageUrl} alt={details.label} className={styles.categoryHeroImage} />
+          {details.coverImageUrl && !isHeroImageBroken && (
+            <img
+              src={details.coverImageUrl}
+              alt={details.label}
+              className={styles.categoryHeroImage}
+              onError={() => setIsHeroImageBroken(true)}
+            />
+          )}
           <div className={styles.categoryHeroOverlay}>
             <strong>{details.label}</strong>
             <span>{items.length} {lang === 'he' ? 'פריטים' : 'items'}</span>
