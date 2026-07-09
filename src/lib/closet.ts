@@ -4,6 +4,17 @@ import { getSiteCopy } from './site-copy'
 
 const DEFAULT_LOCAL_USER_ID = 'local-user'
 
+const DISALLOWED_STOCK_ITEM_IMAGES = new Set([
+  '/assets/images/shirt.jpg',
+  '/assets/images/pants.jpg',
+  '/assets/images/shoes.jpg',
+  '/assets/images/blazer.jpg',
+  '/assets/images/accessories.jpg',
+  '/assets/images/hero-bg.png',
+  '/assets/images/hero-bg-new.png',
+  '/assets/images/hero-closet-clean.png',
+])
+
 export type ClosetCategory = {
   id: string
   label: string
@@ -22,6 +33,106 @@ export type ClosetItem = {
   season: ClothingSeason
   brand?: string
   dateAdded: string
+}
+
+function normalizeColorToHex(color?: string) {
+  const normalized = (color || '').trim().toLowerCase()
+  if (!normalized) return '#2a2d34'
+
+  const namedColorMap: Record<string, string> = {
+    black: '#1f1f1f',
+    white: '#f1f1eb',
+    gray: '#7f8590',
+    grey: '#7f8590',
+    blue: '#3e5f8a',
+    navy: '#24354f',
+    red: '#8f3a3a',
+    green: '#3b6d4d',
+    brown: '#6f513c',
+    beige: '#c8b8a1',
+    cream: '#ddd2bf',
+    pink: '#b97586',
+    purple: '#67507f',
+    yellow: '#b8993b',
+    orange: '#a46b3f',
+  }
+
+  if (namedColorMap[normalized]) return namedColorMap[normalized]
+  if (/^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(normalized)) return normalized
+
+  return '#2a2d34'
+}
+
+function escapeXml(value: string) {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;')
+}
+
+function categoryGlyph(category: ClothingCategory) {
+  if (category === 'shirts') return 'SHIRT'
+  if (category === 'pants') return 'PANTS'
+  if (category === 'shoes') return 'SHOES'
+  if (category === 'jackets') return 'JACKET'
+  return 'ACC'
+}
+
+function makeGeneratedItemImage(item: Pick<ClosetItem, 'category' | 'color' | 'style' | 'name'>) {
+  const background = normalizeColorToHex(item.color)
+  const glyph = categoryGlyph(item.category)
+  const subtitle = `${item.color || 'Unknown'} · ${item.style || 'Casual'}`
+  const title = (item.name || fallbackItemName(item.category)).slice(0, 28)
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1000" viewBox="0 0 800 1000"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="${background}"/><stop offset="100%" stop-color="#121417"/></linearGradient></defs><rect width="800" height="1000" fill="url(#g)"/><rect x="48" y="48" width="704" height="904" rx="36" fill="none" stroke="rgba(255,255,255,0.28)" stroke-width="2"/><text x="400" y="430" text-anchor="middle" fill="rgba(255,255,255,0.9)" font-size="72" font-family="Arial, sans-serif" font-weight="700">${escapeXml(glyph)}</text><text x="400" y="820" text-anchor="middle" fill="rgba(255,255,255,0.95)" font-size="40" font-family="Arial, sans-serif" font-weight="700">${escapeXml(title)}</text><text x="400" y="872" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-size="28" font-family="Arial, sans-serif">${escapeXml(subtitle)}</text></svg>`
+  return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`
+}
+
+function isDisallowedStockImage(value: string) {
+  const normalized = value.toLowerCase().split('?')[0]
+  if (DISALLOWED_STOCK_ITEM_IMAGES.has(normalized)) return true
+  if (normalized.includes('chatgpt%20image')) return true
+  return false
+}
+
+function scrubSuspiciousRepeatedScreenshots(items: ClosetItem[]) {
+  const groups = new Map<string, { count: number; categories: Set<string> }>()
+
+  items.forEach((item) => {
+    const src = item.imageUrl || item.image
+    if (!src || !src.startsWith('data:image/')) return
+
+    const current = groups.get(src) || { count: 0, categories: new Set<string>() }
+    current.count += 1
+    current.categories.add(item.category)
+    groups.set(src, current)
+  })
+
+  const suspicious = new Set<string>()
+  groups.forEach((group, src) => {
+    if (group.count >= 3 && group.categories.size >= 3) suspicious.add(src)
+  })
+
+  if (suspicious.size === 0) return items
+
+  return items.map((item) => {
+    const src = item.imageUrl || item.image
+    if (!src || !suspicious.has(src)) return item
+
+    const generated = makeGeneratedItemImage({
+      category: item.category,
+      color: item.color,
+      style: item.style,
+      name: item.name,
+    })
+
+    return {
+      ...item,
+      imageUrl: generated,
+      image: generated,
+    }
+  })
 }
 
 const categoryMeta = [
@@ -83,13 +194,22 @@ function normalizeClosetItem(item: Partial<ClosetItem>): ClosetItem | null {
 
   const normalizedImage = resolveItemImageSource(item.imageUrl || item.image)
   const normalizedName = typeof item.name === 'string' && item.name.trim().length > 0 ? item.name.trim() : fallbackItemName(item.category)
+  const hasUsableUploadedImage = Boolean(normalizedImage && !isDisallowedStockImage(normalizedImage))
+  const finalImage = hasUsableUploadedImage
+    ? normalizedImage
+    : makeGeneratedItemImage({
+        category: item.category,
+        color: item.color || 'Unknown',
+        style: item.style || 'Casual',
+        name: normalizedName,
+      })
 
   return {
     id: item.id,
     userId: item.userId || DEFAULT_LOCAL_USER_ID,
     name: normalizedName,
-    imageUrl: normalizedImage,
-    image: normalizedImage,
+    imageUrl: finalImage,
+    image: finalImage,
     category: item.category,
     color: item.color || 'Unknown',
     style: item.style || 'Casual',
@@ -107,9 +227,11 @@ export function loadClosetItems(): ClosetItem[] {
     const parsed = JSON.parse(raw) as Partial<ClosetItem>[]
     if (!Array.isArray(parsed) || parsed.length === 0) return defaultItems
 
-    const normalized = parsed
+    const normalized = scrubSuspiciousRepeatedScreenshots(
+      parsed
       .map((item) => normalizeClosetItem(item))
       .filter((item): item is ClosetItem => Boolean(item))
+    )
 
     // Persist normalized shape once so upcoming cloud migration has consistent local schema.
     window.localStorage.setItem('closetItems', JSON.stringify(normalized))
