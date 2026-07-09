@@ -1,0 +1,25 @@
+<svg width="1200" height="900" viewBox="0 0 1200 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="120" y1="70" x2="1120" y2="820" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#DBC8B2"/>
+      <stop offset="1" stop-color="#8B745D"/>
+    </linearGradient>
+    <linearGradient id="jacket" x1="600" y1="240" x2="600" y2="706" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#2A2E36"/>
+      <stop offset="1" stop-color="#13171D"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="900" fill="#0E0F12"/>
+  <rect x="38" y="38" width="1124" height="824" rx="54" fill="url(#bg)"/>
+  <circle cx="140" cy="770" r="200" fill="rgba(255,255,255,0.1)"/>
+  <circle cx="1018" cy="158" r="126" fill="rgba(0,0,0,0.13)"/>
+
+  <path d="M438 302L530 236H670L762 302L785 664C786 686 768 704 746 704H454C432 704 414 686 415 664L438 302Z" fill="url(#jacket)"/>
+  <path d="M530 236L595 327H605L670 236" stroke="#5D6573" stroke-width="8" stroke-linecap="round"/>
+  <path d="M600 328V704" stroke="#5A6371" stroke-width="5"/>
+  <rect x="489" y="398" width="44" height="13" rx="6.5" fill="#8D7659"/>
+  <rect x="667" y="398" width="44" height="13" rx="6.5" fill="#8D7659"/>
+
+  <text x="600" y="810" text-anchor="middle" fill="#201912" font-size="64" font-family="Georgia, Times New Roman, serif" font-weight="700" letter-spacing="6">JACKETS</text>
+</svg>

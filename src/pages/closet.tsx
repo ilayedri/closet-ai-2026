@@ -50,6 +50,7 @@ export default function ClosetPage() {
               type="button"
             >
               <div className={styles.categoryImageWrap}>
+                {category.coverImageUrl && <img src={category.coverImageUrl} alt={category.label} className={styles.categoryImage} />}
                 <div className={styles.categoryImagePlaceholder}>
                   <small>{category.label}</small>
                 </div>

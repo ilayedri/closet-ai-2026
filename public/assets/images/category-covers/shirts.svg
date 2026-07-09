@@ -1,0 +1,23 @@
+<svg width="1200" height="900" viewBox="0 0 1200 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="120" y1="80" x2="1080" y2="820" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#EADCC9"/>
+      <stop offset="1" stop-color="#A39277"/>
+    </linearGradient>
+    <linearGradient id="shirt" x1="600" y1="260" x2="600" y2="690" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#F7F3EB"/>
+      <stop offset="1" stop-color="#CEC5B7"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="900" fill="#0F0F10"/>
+  <rect x="38" y="38" width="1124" height="824" rx="54" fill="url(#bg)"/>
+  <circle cx="1060" cy="138" r="120" fill="rgba(255,255,255,0.18)"/>
+  <circle cx="140" cy="760" r="180" fill="rgba(20,20,20,0.14)"/>
+
+  <path d="M430 292L515 246C528 239 544 238 557 245L600 268L643 245C656 238 672 239 685 246L770 292C795 305 807 334 798 361L760 470V664C760 686 742 704 720 704H480C458 704 440 686 440 664V470L402 361C393 334 405 305 430 292Z" fill="url(#shirt)"/>
+  <path d="M533 268H667" stroke="#B1A491" stroke-width="8" stroke-linecap="round"/>
+  <rect x="585" y="302" width="30" height="38" rx="15" fill="#BBAE9A"/>
+
+  <text x="600" y="810" text-anchor="middle" fill="#1F1A14" font-size="64" font-family="Georgia, Times New Roman, serif" font-weight="700" letter-spacing="6">SHIRTS</text>
+</svg>

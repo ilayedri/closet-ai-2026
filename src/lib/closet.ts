@@ -19,6 +19,7 @@ export type ClosetCategory = {
   id: string
   label: string
   description: string
+  coverImageUrl?: string
 }
 
 export type ClosetItem = {
@@ -135,12 +136,12 @@ function scrubSuspiciousRepeatedScreenshots(items: ClosetItem[]) {
   })
 }
 
-const categoryMeta = [
-  { id: 'shirts' },
-  { id: 'pants' },
-  { id: 'shoes' },
-  { id: 'jackets' },
-  { id: 'accessories' },
+const categoryMeta: Array<{ id: ClothingCategory; coverImageUrl: string }> = [
+  { id: 'shirts', coverImageUrl: '/assets/images/category-covers/shirts.svg' },
+  { id: 'pants', coverImageUrl: '/assets/images/category-covers/pants.svg' },
+  { id: 'shoes', coverImageUrl: '/assets/images/category-covers/shoes.svg' },
+  { id: 'jackets', coverImageUrl: '/assets/images/category-covers/jackets.svg' },
+  { id: 'accessories', coverImageUrl: '/assets/images/category-covers/accessories.svg' },
 ]
 
 export const categories: ClosetCategory[] = getCategories('en')
@@ -152,6 +153,7 @@ export function getCategories(lang: Lang): ClosetCategory[] {
     id: category.id,
     label: copy[category.id as keyof typeof copy].label,
     description: copy[category.id as keyof typeof copy].description,
+    coverImageUrl: category.coverImageUrl,
   }))
 }
 

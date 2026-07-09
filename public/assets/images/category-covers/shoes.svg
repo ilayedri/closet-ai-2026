@@ -1,0 +1,24 @@
+<svg width="1200" height="900" viewBox="0 0 1200 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="110" y1="80" x2="1100" y2="830" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#E3D4C0"/>
+      <stop offset="1" stop-color="#9B8467"/>
+    </linearGradient>
+    <linearGradient id="shoe" x1="360" y1="500" x2="860" y2="650" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ECECEC"/>
+      <stop offset="1" stop-color="#BAB9B7"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="900" fill="#101113"/>
+  <rect x="38" y="38" width="1124" height="824" rx="54" fill="url(#bg)"/>
+  <circle cx="170" cy="170" r="130" fill="rgba(255,255,255,0.12)"/>
+  <circle cx="1050" cy="740" r="190" fill="rgba(0,0,0,0.14)"/>
+
+  <path d="M314 575C330 535 380 513 439 513H649C692 513 730 536 748 572L780 637H283L314 575Z" fill="url(#shoe)"/>
+  <path d="M842 580C858 540 908 518 967 518H1105C1148 518 1186 541 1204 577L1236 642H811L842 580Z" transform="translate(-232 -10)" fill="url(#shoe)"/>
+  <rect x="283" y="637" width="497" height="34" rx="17" fill="#8D826F"/>
+  <rect x="579" y="632" width="425" height="34" rx="17" fill="#8D826F"/>
+
+  <text x="600" y="810" text-anchor="middle" fill="#1F1812" font-size="64" font-family="Georgia, Times New Roman, serif" font-weight="700" letter-spacing="6">SHOES</text>
+</svg>

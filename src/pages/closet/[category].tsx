@@ -41,6 +41,7 @@ export default function CategoryPage() {
         </header>
 
         <section className={styles.categoryHero}>
+          {details.coverImageUrl && <img src={details.coverImageUrl} alt={details.label} className={styles.categoryHeroImage} />}
           <div className={styles.categoryHeroOverlay}>
             <strong>{details.label}</strong>
             <span>{items.length} {lang === 'he' ? 'פריטים' : 'items'}</span>
