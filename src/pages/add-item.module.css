@@ -179,6 +179,20 @@
   font-size: 0.9rem;
 }
 
+.autoInsight {
+  margin-top: 10px;
+  color: #d6b67b;
+  font-size: 0.86rem;
+  letter-spacing: 0.04em;
+}
+
+.uploadError {
+  margin-top: 8px;
+  color: #ffb7b7;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
 .fieldLabel {
   display: block;
   margin-bottom: 18px;

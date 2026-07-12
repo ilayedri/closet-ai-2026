@@ -3,7 +3,7 @@ import { addClosetItem, getCategories } from '@/lib/closet'
 import type { ClothingCategory, ClothingSeason } from '@/lib/data-model'
 import { getSiteCopy } from '@/lib/site-copy'
 import { DEFAULT_USER_ID, ensureUserProfile, upsertWardrobeItem } from '@/lib/style-intelligence'
-import { detectOutfitItemsFromPhoto, detectSingleItemCategory, detectSingleItemCategoryDetails, enqueueOutfitPhotoForSeparation } from '@/lib/visual-wardrobe'
+import { detectOutfitItemsFromPhoto, detectSingleItemCategory, detectSingleItemCategoryDetails, detectSingleItemInsightsFromImage, enqueueOutfitPhotoForSeparation } from '@/lib/visual-wardrobe'
 import { useRouter } from 'next/router'
 import { type ChangeEvent, useEffect, useRef, useState } from 'react'
 import styles from './add-item.module.css'
@@ -44,6 +44,8 @@ export default function AddItemPage() {
   const [detectedCategories, setDetectedCategories] = useState<ClothingCategory[]>([])
   const [queuedForSeparation, setQueuedForSeparation] = useState(false)
   const [uploadFileName, setUploadFileName] = useState('')
+  const [uploadError, setUploadError] = useState('')
+  const [autoInsightSummary, setAutoInsightSummary] = useState('')
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
@@ -77,33 +79,85 @@ export default function AddItemPage() {
     const file = event.target.files?.[0]
     if (!file) return
 
+    setUploadError('')
+    setAutoInsightSummary('')
+
+    if (!file.type.startsWith('image/')) {
+      setUploadError(lang === 'he' ? 'הקובץ שנבחר אינו תמונה תקינה. יש לבחור קובץ תמונה בלבד.' : 'Selected file is not a valid image. Please upload an image file.')
+      setImage('')
+      setUploadFileName('')
+      return
+    }
+
     const reader = new FileReader()
+    reader.onerror = () => {
+      setUploadError(lang === 'he' ? 'הייתה בעיה בטעינת התמונה. נסה קובץ אחר.' : 'Failed to read this image file. Please try another image.')
+      setImage('')
+      setUploadFileName('')
+    }
     reader.onload = () => {
       const result = reader.result
       if (typeof result === 'string') {
         setImage(result)
         setUploadFileName(file.name)
-        const detection = detectSingleItemCategoryDetails({
-          name,
-          fileName: file.name,
-          style,
-          brand,
-        })
-        setDetectedCategories([detection.category])
-        logItemProcessing('upload-received', {
-          fileName: file.name,
-          hasImage: true,
-          detectedCategory: detection.category,
-          confidence: detection.confidence,
-        })
+
+        void (async () => {
+          try {
+            const insight = await detectSingleItemInsightsFromImage({
+              image: result,
+              name,
+              fileName: file.name,
+              style,
+              brand,
+            })
+
+            setColor(insight.color)
+            setStyle(insight.style)
+            setSeason(insight.season)
+            setDetectedCategories([insight.category])
+
+            const summary =
+              lang === 'he'
+                ? `זוהה אוטומטית: ${insight.color} · ${insight.style} · ${insight.season}`
+                : `Auto-detected: ${insight.color} · ${insight.style} · ${insight.season}`
+            setAutoInsightSummary(summary)
+
+            logItemProcessing('upload-received', {
+              fileName: file.name,
+              hasImage: true,
+              detectedCategory: insight.category,
+              confidence: insight.confidence,
+              detectedColor: insight.color,
+              detectedStyle: insight.style,
+              detectedSeason: insight.season,
+            })
+          } catch {
+            const fallback = detectSingleItemCategoryDetails({
+              name,
+              fileName: file.name,
+              style,
+              brand,
+            })
+            setDetectedCategories([fallback.category])
+            setUploadError(lang === 'he' ? 'התמונה עלתה, אבל הזיהוי חלקי. אפשר לשמור והמערכת תשלים נתונים.' : 'Image uploaded, but analysis is partial. You can still save and the system will complete metadata.')
+          }
+        })()
       }
     }
     reader.readAsDataURL(file)
   }
 
   function handleSubmit() {
+    setUploadError('')
+
     const dateAdded = new Date().toISOString().slice(0, 10)
     const normalizedImage = image.trim() || undefined
+
+    if (sourceMode === 'upload' && !normalizedImage) {
+      setUploadError(lang === 'he' ? 'לא נבחרה תמונה תקינה. יש להעלות תמונה לפני שמירה.' : 'No valid image was uploaded. Please upload an image before saving.')
+      return
+    }
+
     const detection = detectSingleItemCategoryDetails({
       name,
       fileName: uploadFileName,
@@ -304,6 +358,8 @@ export default function AddItemPage() {
           <div className={styles.previewWrap}>
             {image ? <img src={image} alt={copy.image} className={styles.previewImage} /> : <div className={styles.emptyPreview}>{copy.imageMissingHint}</div>}
             <p>{uploadFileName || copy.uploadHint}</p>
+            {autoInsightSummary && <p className={styles.autoInsight}>{autoInsightSummary}</p>}
+            {uploadError && <p className={styles.uploadError}>{uploadError}</p>}
           </div>
         </section>
 
